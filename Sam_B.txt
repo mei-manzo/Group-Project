@@ -1,0 +1,45 @@
+--Notes--
+-all built html, of course, is up to Jason, I just needed
+ something to work with.
+-Do you mind if we pull the error check/messages from 
+ lines 17-20 views.py:group_app into the models?
+
+
+
+
+
+
+
+
+
+--To_Do--
+-update process_edit_subscription GET redirect 
+ to home page once built
+
+
+
+
+
+
+
+
+
+--Completed--
+7/21/2021
+-added admin dashboard 
+    -follow /admin route
+        -Admin login:
+            - Admin
+            - aaaaa@aaa.aaa
+            - aaaaaaaa
+-created users b-g
+    -all users follow this pattern of registration
+        -bbbbb
+        -bbbbb
+        -bbbbb@bbb.bbb
+        -bbbbbbbb
+-added 3 subscriptions for each user
+-form built for add subscriptions
+-add_subscription and process_add_subscription built
+-form built for edit subscriptions
+-edit_subscription and process_edit_subscription built
