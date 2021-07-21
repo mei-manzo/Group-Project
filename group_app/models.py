@@ -35,6 +35,28 @@ class UserManager(models.Manager):
             errors['password'] = "Email and password do not match"
         return errors
 
+class SubscriptionManager(models.Manager): #validates subscription data
+    def basic_validator(self, postData):
+        errors = {}
+        MONEY_REGEX = re.compile('|'.join([
+            r'^\$?(\d*\.\d{1,2})$',  # e.g., $.50, .50, $1.50, $.5, .5
+            r'^\$?(\d+)$',           # e.g., $500, $5, 500, 5
+            r'^\$(\d+\.?)$',         # e.g., $5.
+            ]))
+        if len(postData['company']) <2:
+            errors["company"]="Company should be at least 2 characters."
+        if len(postData['level']) <2:
+            errors["level"]="Subscription level should be at least 2 characters."
+        if len(postData['monthly_rate']) < 1:
+            errors["monthly_rate"]="Must enter a monthly rate"
+        if not MONEY_REGEX.match(postData['monthly_rate']):             
+            errors['monthly_rate'] = ("Invalid monetary value!")
+        if len(postData['start_date']) < 1:
+            errors["start_date"]="Must select a start date."
+        if len(postData['duration']) < 1:
+            errors["duration"]="Must select a duration."
+        return errors
+        
 class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -43,3 +65,14 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
     objects = UserManager()
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, related_name = "subscriptions", on_delete = models.CASCADE)
+    company = models.CharField(max_length = 255)#hulu, amazon prime, etc
+    level = models.CharField(max_length = 255) # for premium, basic, first tier etc
+    monthly_rate = models.CharField(max_length = 255)
+    start_date = models.DateField()#can be selected from a clickable calender to deal with formatting
+    duration = models.CharField(max_length = 255) #can select from dropdown? auto-renew, 12-month, etc
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add = True)
+    objects = SubscriptionManager()#use to validate subscription data
