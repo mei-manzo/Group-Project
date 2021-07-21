@@ -13,6 +13,8 @@ class UserManager(models.Manager):
             errors["last_name"]="Last name should be at least 2 characters"
         if not EMAIL_REGEX.match(postData['email']):             
             errors['email'] = ("Invalid email address!")
+        if len(User.objects.filter(email=email)) >= 1:
+            errors["email"]="Email is already in use"
         if len(postData['password']) < 8:
             errors["password"]="Password must be at least 8 characters"
         if postData['password'] != postData['confirm-password']:
