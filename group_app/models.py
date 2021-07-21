@@ -2,6 +2,11 @@ from django.db import models
 import re
 import bcrypt
 
+
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+
+
 class UserManager(models.Manager):
     def basic_validator(self, postData):
         errors = {}
@@ -34,6 +39,23 @@ class UserManager(models.Manager):
         elif bcrypt.checkpw(postData['password'].encode(), existing_user[0].password.encode()) != True:
             errors['password'] = "Email and password do not match"
         return errors
+
+    def edit_profile_validator(self, postData):
+        errors = {}
+
+        if len(postData['first_name']) < 2 or not NAME_REGEX.match(postData['first_name']):
+            errors['first_name'] = "Please enter a valid first name"
+        if len(postData['last_name']) < 2 or not NAME_REGEX.match(postData['last_name']):
+            errors['last_name'] = "Please enter a valid last name"
+        if len(postData['email']) < 2 or not EMAIL_REGEX.match(postData['email']):
+            errors["email"] = "Please enter a valid email"
+        user = self.get(id=postData['user_id'])
+        if user.email != postData['email']:
+            email_in_db = self.filter(email = postData['email'])
+            if email_in_db:
+                errors['email'] = "This email is already registered to another user"
+        return errors
+
 
 class SubscriptionManager(models.Manager): #validates subscription data
     def basic_validator(self, postData):

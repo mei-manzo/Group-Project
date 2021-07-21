@@ -7,19 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
     <link rel="stylesheet" href="{% static 'index.css' %}">
-    <title>Edit Subscription</title>
+    <title>Add Subscription</title>
 </head>
 
 <body>
-    <form action="/process_edit_subscription" method="POST">
+
+
+
+    <form action="/process_add_subscription" method="POST">
         {% csrf_token %}
-        <p>Company: <input type="text" name="company" value="{{ subscription_to_edit.company }}"></p>
-        <p>Level: <input type="text" name="level" value="{{ subscription_to_edit.level }}"></p>
-        <p>Monthly Rate: <input type="text" name="monthly_rate" value="{{ subscription_to_edit.monthly_rate }}"></p>
-        <p>Start Date: <input type="date" name="start_date" value="{{ subscription_to_edit.start_date|date:"Y-m-d"  }}"></p>
+        <p>Company: <input type="text" name="company"></p>
+        <p>Level: <input type="text" name="level"></p>
+        <p>Monthly Rate: <input type="text" name="monthly_rate"></p>
+        <p>Start Date: <input type="date" name="start_date"></p>
         <p>Duration:
             <select name="duration">
-                <option value="{{ subscription_to_edit.duration }}">{{ subscription_to_edit.duration }}</option>
                 <option value="bi-annually">Bi-annually</option>
                 <option value="yearly">Yearly</option>
                 <option value="monthly">Monthly</option>
@@ -28,8 +30,7 @@
                 <!-- <option value="monthly">Monthly</option> -->
             </select>
         </p>
-        <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
-        <button type="submit">Edit this Subscription</button>
+        <button type="submit">Add New Subscription</button>
     </form>
 
 
