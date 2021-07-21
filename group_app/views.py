@@ -14,10 +14,6 @@ def check_registration(request):
         for key, value in errors.items():
             messages.error(request, value)
         return redirect('/')
-    #changed to check len of dictionary
-    elif len(User.objects.filter(email=email)) >= 1:
-        messages.error(request, "Email is already in use")
-        return redirect('/')
     else:
         hashed_pw = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
         new_user = User.objects.create(first_name = request.POST['first-name'], last_name = request.POST['last-name'], email = request.POST['email'], password = hashed_pw)
