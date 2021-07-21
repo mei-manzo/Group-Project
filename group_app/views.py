@@ -59,9 +59,33 @@ def logout(request):
 
 
 
+def user_account(request):
+    if 'user_id' in request.session:
+        logged_user = User.objects.get(id=request.session['user_id'])
 
+        context = {
+            'logged_user': logged_user,
+            'user_subscriptions': Subscription.objects.filter(user=logged_user),
+        }
+        return render(request, "editUser.html", context)
+    return redirect("/")  
 
-
+def process_edit_user(request):
+    if 'user_id' in request.session:
+        if request.method == "POST":
+            # errors handling
+            errors = User.objects.edit_profile_validator(request.POST)
+            if len(errors) > 0:
+                for error in errors.values():
+                    messages.error(request, error)
+            else:
+                logged_user = User.objects.get(id=request.session['user_id'])
+                logged_user.first_name = request.POST['first_name']
+                logged_user.last_name = request.POST['last_name']
+                logged_user.email = request.POST['email']
+                logged_user.save()
+        return redirect("/user_account")
+    return redirect("/")
 
 
 def add_subscription(request):

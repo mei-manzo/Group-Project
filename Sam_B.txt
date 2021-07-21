@@ -43,3 +43,7 @@
 -add_subscription and process_add_subscription built
 -form built for edit subscriptions
 -edit_subscription and process_edit_subscription built
+-user_account started
+    -edit user form built
+    -validations for edit user form built
+    -user_account and process_edit_user built
