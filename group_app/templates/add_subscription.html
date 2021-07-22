@@ -1,39 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang = "en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'index.css' %}">
     <title>Add Subscription</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '' %}"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
 </head>
-
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hello, {{ logged_user.first_name }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto"></ul>
+                <span class="navbar-text">
+                        <a href="/subscriptions" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Subscriptions</a>
+                        {% comment %} <a href="/subscriptions/stats" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Stats</a>
+                        <a href="/process_edit_user" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a> {% endcomment %}
+                        </a> <a href="/logout" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Logout</a>
+                </span>                
+            </div>
+        </div>
+    </nav>
 
+    <div class="container">
 
+        <div id="errors">
+            {% if messages %}
+            <ul>    
+                {% for message in messages %}    
+                    <li>{{ message }}</li>    
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>      <!--end errors-->
 
-    <form action="/process_add_subscription" method="POST">
-        {% csrf_token %}
-        <p>Company: <input type="text" name="company"></p>
-        <p>Level: <input type="text" name="level"></p>
-        <p>Monthly Rate: <input type="text" name="monthly_rate"></p>
-        <p>Start Date: <input type="date" name="start_date"></p>
-        <p>Duration:
-            <select name="duration">
-                <option value="bi-annually">Bi-annually</option>
-                <option value="yearly">Yearly</option>
-                <option value="monthly">Monthly</option>
-                <!-- <option value="bi-annually">Bi-annually</option> -->
-                <!-- <option value="yearly">Yearly</option> -->
-                <!-- <option value="monthly">Monthly</option> -->
-            </select>
-        </p>
-        <button type="submit">Add New Subscription</button>
-    </form>
+        <h1>Add Subscription:</h1>
 
+        <form action="/process_add_subscription" method="POST">
+            {% csrf_token %}
 
+            <div class="form-group">
+                <label for='company'>Company:</label>
+                <input type="text" name="company" id='company' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for='level'>Level:</label>
+                <input type="text" name="level" id='level' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for='monthly_rate'>Monthly Rate:</label>
+                <input type="text" name="monthly_rate" id='monthly_rate' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for='start_date'>Start Date:</label>
+                <input type="date" name="start_date" id='start_date' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for='duration'>Duration:</label>
+                <select name="duration" id='duration' class='form-control'>
+                    <option value="Bi-annually">Bi-annually</option>
+                    <option value="Yearly">Yearly</option>
+                    <option value="Monthly">Monthly</option>
+                    <!-- <option value="bi-annually">Bi-annually</option> -->
+                    <!-- <option value="yearly">Yearly</option> -->
+                    <!-- <option value="monthly">Monthly</option> -->
+                </select>
+            </div>
+            <div class="form-group">
+                <button class='btn btn-primary' type="submit">Add Subscription</button>
+            </div>
+
+        </form>
+    </div>
 
 </body>
 
