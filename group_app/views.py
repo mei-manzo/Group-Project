@@ -18,7 +18,7 @@ def check_registration(request):
         hashed_pw = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
         new_user = User.objects.create(first_name = request.POST['first-name'], last_name = request.POST['last-name'], email = request.POST['email'], password = hashed_pw)
         request.session['user_id'] = new_user.id
-        return redirect('/success')
+        return redirect('/subscriptions')
 
 def check_login(request):
     if request.method == "GET":
@@ -31,21 +31,45 @@ def check_login(request):
             return redirect('/')
         this_user = User.objects.filter(email=request.POST['email'])
         request.session['user_id'] = this_user[0].id
-        return redirect('/success')
+        return redirect('/subscriptions')
 
-def success(request):
-    if 'user_id' not in request.session:
-        return redirect('/')
-    this_user = User.objects.filter(id = request.session['user_id'])
-    context = {
-        "current_user" : this_user[0], #grabs from session rather than database to prevent refreshing into login
-        }
-    return render(request, "success.html", context)
+# def success(request):
+#     if 'user_id' not in request.session:
+#         return redirect('/')
+#     this_user = User.objects.filter(id = request.session['user_id'])
+#     context = {
+#         "current_user" : this_user[0], #grabs from session rather than database to prevent refreshing into login
+#         }
+#     return render(request, "success.html", context)
 
 def logout(request):
     request.session.flush()
     return redirect('/')
 
+def subscriptions(request):
+    if 'user_id' not in request.session:
+        return redirect('/')
+    else:
+        logged_user = User.objects.get(id=request.session['user_id'])
+        Subscription.objects.filter(user = logged_user)
+        context ={
+            'my_subscriptions': Subscription.objects.filter(user = logged_user).order_by('start_date'),
+            'user': logged_user
+        }
+        return render(request, 'subscription.html', context)
+
+def stats(request):
+    if 'user_id' not in request.session:
+        return redirect('/')
+    else:
+        logged_user = User.objects.filter(id=request.session['user_id'])[0]
+        all_subscriptions = Subscription.objects.filter(user = logged_user)
+        
+        context = {
+            'all_subscriptions_count': len(all_subscriptions),
+            'user' : logged_user
+        }
+    return render(request, 'stats.html', context)
 
 
 
