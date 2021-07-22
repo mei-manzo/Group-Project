@@ -5,66 +5,95 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'index.css' %}">   
-    <title>Login</title>
+    <link rel="stylesheet" href="{% static '' %}"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+    {% comment %} <link rel="stylesheet" href="{% static 'index.css' %}">    {% endcomment %}
+    <title>Login & Registration</title>
 </head>
 <body>
-        <div id="container-1">
-            <h1>Registration</h1>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <h1>Subscription Tracker</h1>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto"></ul>
+                <span class="navbar-text">
+                </span>                
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container" style="margin-top: 30px;">
+
+        <div id="errors">
             {% if messages %}
-            <ul class="messages">    
-                {% for message in messages %}    
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
-                {% endfor %}
+            <ul>    
+                {% for message in messages %}    
+                    <li>{{ message }}</li>    
+                {% endfor %}
             </ul>
             {% endif %}
-            <form action="/check_registration" method='POST'>
-                {% csrf_token %}
-                <div>
-                    <label for="first-name">First Name:</label>
-                    <input class="first-name" type="text" name = "first-name">
-                </div>
-                <div>
-                    <label for="last-name">Last Name:</label>
-                    <input class="last-name" type="text" name = "last-name">
-                </div>
-                <div>
-                    <label for="email">Email:</label>
-                    <input class="email" type="email" name = "email">
-                </div>
-                <div>
-                    <label for="password">Password:</label>
-                    <input class="password" type="password" name = "password">
-                </div>
-                <div>
-                    <label for="confirm-password">Confirm Password:</label>
-                    <input class="confirm-password" type="password" name = "confirm-password">
-                </div>
-                <input type="submit" value="Register" id = "button-1">
-            </form>
-        </div>
-        <div id="container-2">
-            <h1>Login</h1>
-            {% if messages %}
-            <ul class="messages">    
-                {% for message in messages %}    
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
-                {% endfor %}
-            </ul>
-            {% endif %}
-            <form action="/check_login" method='POST'>
-                {% csrf_token %}
-                <div>
-                    <label for="email">Email:</label>
-                    <input class="email" type="email" name = "email">
-                </div>
-                <div>
-                    <label for="password">Password:</label>
-                    <input class="password" type="password" name = "password">
-                </div>
-                <input type="submit" value="Login" id = "button-2">
-            </form>
-        </div>
+        </div>      <!--end errors-->
+
+        <h2>Login</h2>
+        {% if messages %}
+        <ul class="messages">    
+            {% for message in messages %}    
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <form action="/check_login" method='POST'>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id='email' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for="passsword">Password:</label>
+                <input type="password" name="password" id='password' class='form-control'>
+            </div>
+            <input type="submit" value="Login" id ="button-2">
+        </form>
+
     </div>
+
+    <div class="container" style="margin-top: 100px;">
+
+        <h2>Registration</h2>
+
+        <form action="/check_registration" method='POST'>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="first-name">First Name:</label>
+                <input type="text" name="first-name" id='first-name' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for="last-name">Last Name:</label>
+                <input type="text" name="last-name" id='last-name' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id='email' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for="passsword">Password:</label>
+                <input type="password" name="password" id='password' class='form-control'>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="confirm-password" name="confirm-password" id='password' class='form-control'>
+            </div>
+
+            <input type="submit" value="Register" id="button-1">
+        </form>
+    </div>
+
 </body>
 </html> 
