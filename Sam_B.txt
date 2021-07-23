@@ -1,6 +1,15 @@
 --Notes--
--all built html, of course, is up to Jason, I just needed
- something to work with.
+-We have one more body column than header 
+ column on our dashboard
+-I see us headed for another issue; we have the day
+ a user starts the account, and that is what Phoung is
+ currently ordering by, but if we are going to want to 
+ generally reference the date the subscription is due to 
+ be renewed it may be wise to add that as an attribute to 
+ the subscription model. This would allow us to be able to
+ calculate it twice at it's creation and it's renewal rather
+ than having to worry about working it out in templating for every
+ subscription each time a page is loaded.
 
 
 
@@ -23,6 +32,12 @@
 
 
 --Completed--
+7/23/2021
+-corrected hrefs for user_account in links
+-created hrefs for order_by designation subscriptions.py
+-created logic for variable order_by subscriptions:views
+-updated subscriptions related urls
+
 7/22/2021
 -added access approval to edit_subscription to confirm
  subscription_to_edit belongs to logged_user

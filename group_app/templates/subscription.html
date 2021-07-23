@@ -24,7 +24,7 @@
                         class="btn btn-sm btn-info ml-2 text-white">Add Subscription</a>
                         <a href="/subscriptions/stats" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Stats</a>
-                        <a href="/process_edit_user" role="button"
+                        <a href="/user_account" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a>
                         <a href="/logout" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Logout</a>
@@ -39,10 +39,10 @@
         <h1>My Subscription List:</h1>
         <table class="table table-dark">
             <thead>
-                <th>Subscription:</th>
-                <th>Type of Subscription:</th>
-                <th>Monthly Rate:</th>
-                <th>Start Date:</th>
+                <th><a href="/subscriptions/cn/1">Subscription:</a></th>
+                <th><a href="/subscriptions/st/1">Type of Subscription:</a></th>
+                <th><a href="/subscriptions/mr/1">Monthly Rate</a><th>
+                <th><a href="/subscriptions/sd/1">Start Date:</a></th>
                 
             </thead>
             <tbody>
@@ -64,17 +64,17 @@
     <div id="page_nav">
         {% if my_subscriptions.has_previous %}
             <button>
-                <a href="/subscriptions/{{ my_subscriptions.previous_page_number }}">&laquo;</a>
+                <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.previous_page_number }}">&laquo;</a>
             </button>
         {% endif %}
         {% for i in num_of_pages %}
             <button>
-                <a href="/subscriptions/{{ forloop.counter }}">{{ forloop.counter }}</a>
+                <a href="/subscriptions/{{ order_by }}/{{ forloop.counter }}">{{ forloop.counter }}</a>
             </button>
         {% endfor %}
         {% if my_subscriptions.has_next %}
             <button>
-                <a href="/subscriptions/{{ my_subscriptions.next_page_number }}">&raquo;</a>
+                <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.next_page_number }}">&raquo;</a>
             </button>
         {% endif %}
     </div>      <!--page_nav-->

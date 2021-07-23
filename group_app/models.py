@@ -79,6 +79,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["duration"]="Must select a duration."
         return errors
         
+
 class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -87,6 +88,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
     objects = UserManager()
+
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, related_name = "subscriptions", on_delete = models.CASCADE)

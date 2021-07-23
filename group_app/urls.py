@@ -1,12 +1,12 @@
 from django.urls import path     
 from . import views
+
 urlpatterns = [
     path('', views.index),
-    # path('success', views.success),
     path('check_registration', views.check_registration),
     path('check_login', views.check_login),
     path('logout', views.logout),
-    path('subscriptions/<int:page_num>', views.subscriptions),
+    path('subscriptions/<str:order_by>/<int:page_num>', views.subscriptions),
     path('subscriptions/stats', views.stats),
 
 
@@ -19,5 +19,4 @@ urlpatterns = [
     path('process_edit_subscription/<int:subscription_id>', views.process_edit_subscription),
     path('delete_subscription', views.delete_subscription),
     path('renew_subscription/<int:subscription_id>', views.renew_subscription),
-
 ]
