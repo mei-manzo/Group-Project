@@ -33,12 +33,13 @@ class UserManager(models.Manager):
     def login_validator(self, postData):
         errors = {}
         email = postData['email']
-        existing_user = self.filter(email=postData['email'])
+        # existing_user = self.filter(email=postData['email'])
+        existing_user = User.objects.filter(email=postData['email'])
         if len(postData['email']) == 0:
             errors['email'] = "Must enter an email"
-        if len(User.objects.filter(email=email)) == 0:
+        elif len(existing_user) == 0: 
             errors['email'] = "Email is not registered"
-        if len(postData['password']) < 8:
+        elif len(postData['password']) < 8:
             errors['password'] = "Must enter a password 8 characters or longer"
         elif bcrypt.checkpw(postData['password'].encode(), existing_user[0].password.encode()) != True:
             errors['password'] = "Email and password do not match"
@@ -89,9 +90,35 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     objects = UserManager()
 
+class Company(models.Model): #one-to-many with photos, subscriptions
+    company_name = models.CharField(max_length=255)
+    url = models.TextField()#made text field in case urls are very long
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add = True)
 
-class Subscription(models.Model):
-    user = models.ForeignKey(User, related_name = "subscriptions", on_delete = models.CASCADE)
+class Photo(models.Model):#company photos
+    photo_of = models.ForeignKey(
+        Company,
+        related_name="company_photos",
+        on_delete=models.CASCADE
+    )
+    image_src = models.TextField()#made text field in case img urls are very long
+    image_alt = models.CharField(max_length=255)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add = True)
+
+class Subscription(models.Model): #company's / user's subscriptions
+    user = models.ForeignKey(
+        User, 
+        related_name = "subscriptions", 
+        on_delete = models.CASCADE
+    )
+    the_company = models.ForeignKey(
+        Company, 
+        related_name = "company_subscriptions", 
+        on_delete = models.CASCADE
+    )
+    account = models.CharField(max_length = 255) #for different accounts from same company
     company = models.CharField(max_length = 255)#hulu, amazon prime, etc
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
     monthly_rate = models.CharField(max_length = 255)
@@ -100,3 +127,16 @@ class Subscription(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
     objects = SubscriptionManager()#use to validate subscription data
+
+class DataPoint(models.Model):  #connect to subscription (can show one, or all)
+    subscription = models.OneToOneField(
+        Subscription,
+        on_delete=models.CASCADE,
+        primary_key = True
+    )
+    monthly_rate = models.CharField(max_length = 255)
+    price_change = models.CharField(max_length = 255)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add = True)
+
+
