@@ -90,8 +90,9 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     objects = UserManager()
 
-class Subscription(models.Model):
+class Subscription(models.Model): 
     user = models.ForeignKey(User, related_name = "subscriptions", on_delete = models.CASCADE)
+    # account = models.CharField(max_length = 255) #for different accounts from same company
     company = models.CharField(max_length = 255)#hulu, amazon prime, etc
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
     monthly_rate = models.CharField(max_length = 255)
@@ -100,3 +101,15 @@ class Subscription(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
     objects = SubscriptionManager()#use to validate subscription data
+
+#class Company  #one to many relationship
+    #images = models.CharField()
+    #name = 
+    #image_alt = models.CharField()
+    #url = models.CharField()
+    # updated_at = models.DateTimeField(auto_now=True)
+    # created_at = models.DateTimeField(auto_now_add = True)
+
+#class DataPoint  #connect to subscription (can show one, or all) 
+    #price
+    #price change = data point

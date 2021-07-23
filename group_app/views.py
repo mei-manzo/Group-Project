@@ -33,15 +33,6 @@ def check_login(request):
         request.session['user_id'] = this_user[0].id
         return redirect('/subscriptions')
 
-# def success(request):
-#     if 'user_id' not in request.session:
-#         return redirect('/')
-#     this_user = User.objects.filter(id = request.session['user_id'])
-#     context = {
-#         "current_user" : this_user[0], #grabs from session rather than database to prevent refreshing into login
-#         }
-#     return render(request, "success.html", context)
-
 def logout(request):
     request.session.flush()
     return redirect('/')
