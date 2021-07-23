@@ -39,6 +39,7 @@
 -threw some suggested css into a file for subscriptions pagination
 -capitalize duration values in forms and for existing 
  accounts in db
+-added enough memberships to user b to allow for three pages of subscriptions/paginated
 
 
 
