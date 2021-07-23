@@ -123,6 +123,7 @@ class Subscription(models.Model): #company's / user's subscriptions
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
     monthly_rate = models.CharField(max_length = 255)
     start_date = models.DateField()#can be selected from a clickable calender to deal with formatting
+    due_date = models.CharField(max_length = 10)#made charfield so that can designate just one day of month - the "9th" of every month etc.
     duration = models.CharField(max_length = 255) #can select from dropdown? auto-renew, 12-month, etc
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
