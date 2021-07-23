@@ -36,8 +36,8 @@ def check_login(request):
             for error in errors.values():
                 messages.error(request, error)
         else:
-            this_user = User.objects.filter(email=request.POST['email'])
-            request.session['user_id'] = this_user[0].id
+            this_user = User.objects.get(email=request.POST['email'])
+            request.session['user_id'] = this_user.id
             return redirect('/subscriptions/1')
     return redirect ("/")
 
