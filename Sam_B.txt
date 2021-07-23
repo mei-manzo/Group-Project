@@ -37,6 +37,8 @@
 -created hrefs for order_by designation subscriptions.py
 -created logic for variable order_by subscriptions:views
 -updated subscriptions related urls
+-added some memberships to user b that are close to or over due
+
 
 7/22/2021
 -added access approval to edit_subscription to confirm
