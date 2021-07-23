@@ -20,7 +20,7 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto"></ul>
                 <span class="navbar-text">
-                        <a href="/subscriptions" role="button"
+                        <a href="/subscriptions/1" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Subscriptions</a>
                         {% comment %} <a href="/subscriptions/stats" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Stats</a>
@@ -47,7 +47,7 @@
 
             <h1>Edit Subscription:</h1>   
 
-        <form action="/process_edit_subscription" method="POST">
+        <form action="/process_edit_subscription/{{ subscription_to_edit.id}}" method="POST">
             {% csrf_token %}
 
             <div class="form-group">
@@ -87,6 +87,31 @@
             </div>
 
         </form>
+
+
+
+
+
+
+        <form action="/delete_subscription" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
+            <button type="submit">Delete this Subscription</button>
+        </form>
+    
+        <form action="/renew_subscription/{{ subscription_to_edit.id }}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
+            <button type="submit">Renew this Subscription</button>
+        </form>
+    
+    
+
+
+
+
+
+
     </div>
 
 </body>
