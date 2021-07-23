@@ -80,6 +80,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["duration"]="Must select a duration."
         return errors
         
+
 class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)

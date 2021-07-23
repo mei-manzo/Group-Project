@@ -25,12 +25,13 @@ def check_registration(request):
                 email = request.POST['email'], 
                 password = hashed_pw)
             request.session['user_id'] = new_user.id
-            return redirect('/subscriptions/1')
+            return redirect('/subscriptions/sd/1')
     return redirect('/')
 
 
 def check_login(request):
     if request.method == "POST":
+        # errors handling
         errors = User.objects.login_validator(request.POST)
         if len(errors) > 0:
             for error in errors.values():
@@ -38,7 +39,7 @@ def check_login(request):
         else:
             this_user = User.objects.get(email=request.POST['email'])
             request.session['user_id'] = this_user.id
-            return redirect('/subscriptions/1')
+            return redirect('/subscriptions/sd/1')
     return redirect ("/")
 
 
@@ -47,20 +48,32 @@ def logout(request):
     return redirect('/')
 
 
-def subscriptions(request, page_num):
+def subscriptions(request, order_by, page_num):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
-        my_subscriptions = Subscription.objects.filter(user = logged_user).order_by('start_date')
         
+        # order by director
+        if order_by == "cn":
+            order_by_field = "company"
+        elif order_by == "st":
+            order_by_field = "level"
+        elif order_by == "mr":
+            order_by_field = "monthly_rate"
+        else:
+            order_by_field = "start_date"
+        
+        my_subscriptions = Subscription.objects.filter(user = logged_user).order_by(order_by_field)
+
+        # pagination driver
         p = Paginator(my_subscriptions, 5)
         page = p.page(page_num)
         num_of_pages = "a" * p.num_pages
-
         
-        context ={
+        context = {
             'user': logged_user,
             'my_subscriptions': page,
             'num_of_pages': num_of_pages,
+            'order_by': order_by,
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
@@ -157,12 +170,13 @@ def edit_subscription(request, subscription_id):
         logged_user = User.objects.get(id=request.session['user_id'])
         subscription_to_edit = Subscription.objects.get(id=subscription_id)
         if subscription_to_edit.user == logged_user:     
+
             context = {
                 'logged_user': logged_user,
                 'subscription_to_edit': subscription_to_edit,
             }
             return render(request, "editSubscription.html", context)
-        return redirect("/subscriptions/1")
+        return redirect("/subscriptions/sd/1")
     return redirect("/")
 
 
@@ -196,7 +210,7 @@ def delete_subscription(request):
             if subscription_to_delete.user == logged_user:     
                 subscription_to_delete.delete()
                 return redirect("/user_account")
-        return redirect("/subscriptions/1")
+        return redirect("/subscriptions/sd/1")
     return redirect("/")
 
 
