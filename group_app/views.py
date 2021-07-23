@@ -1,75 +1,82 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, redirect
 from django.contrib import messages
+import bcrypt
 from .models import *
+from datetime import datetime
+from django.core.paginator import Paginator
+
 
 def index(request):
     return render(request, "index.html")
 
+
 def check_registration(request):
-    errors = User.objects.basic_validator(request.POST)
-    email = request.POST['email']
-    if request.method == "GET":
-        return redirect('/')
-    elif len(errors) > 0:
-        for key, value in errors.items():
-            messages.error(request, value)
-        return redirect('/')
-    else:
-        hashed_pw = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
-        new_user = User.objects.create(first_name = request.POST['first-name'], last_name = request.POST['last-name'], email = request.POST['email'], password = hashed_pw)
-        request.session['user_id'] = new_user.id
-        return redirect('/subscriptions')
+    if request.method == "POST":
+        # errors handling
+        errors = User.objects.basic_validator(request.POST)
+        if len(errors) > 0:
+            for error in errors.values():
+                messages.error(request, error)
+        else:
+            hashed_pw = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
+            new_user = User.objects.create(
+                first_name = request.POST['first-name'], 
+                last_name = request.POST['last-name'], 
+                email = request.POST['email'], 
+                password = hashed_pw)
+            request.session['user_id'] = new_user.id
+            return redirect('/subscriptions/1')
+    return redirect('/')
+
 
 def check_login(request):
-    if request.method == "GET":
-        return redirect ("/")
-    else:
+    if request.method == "POST":
         errors = User.objects.login_validator(request.POST)
         if len(errors) > 0:
-            for key, value in errors.items():
-                messages.error(request, value)
-            return redirect('/')
-        this_user = User.objects.filter(email=request.POST['email'])
-        request.session['user_id'] = this_user[0].id
-        return redirect('/subscriptions')
+            for error in errors.values():
+                messages.error(request, error)
+        else:
+            this_user = User.objects.get(email=request.POST['email'])
+            request.session['user_id'] = this_user.id
+            return redirect('/subscriptions/1')
+    return redirect ("/")
 
-# def success(request):
-#     if 'user_id' not in request.session:
-#         return redirect('/')
-#     this_user = User.objects.filter(id = request.session['user_id'])
-#     context = {
-#         "current_user" : this_user[0], #grabs from session rather than database to prevent refreshing into login
-#         }
-#     return render(request, "success.html", context)
 
 def logout(request):
     request.session.flush()
     return redirect('/')
 
-def subscriptions(request):
-    if 'user_id' not in request.session:
-        return redirect('/')
-    else:
+
+def subscriptions(request, page_num):
+    if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
-        Subscription.objects.filter(user = logged_user)
+        my_subscriptions = Subscription.objects.filter(user = logged_user).order_by('start_date')
+        
+        p = Paginator(my_subscriptions, 5)
+        page = p.page(page_num)
+        num_of_pages = "a" * p.num_pages
+
+        
         context ={
-            'my_subscriptions': Subscription.objects.filter(user = logged_user).order_by('start_date'),
-            'user': logged_user
+            'user': logged_user,
+            'my_subscriptions': page,
+            'num_of_pages': num_of_pages,
         }
-        return render(request, 'subscription.html', context)
+        return render(request, 'subscription.html', context)    
+    return redirect('/')
+
 
 def stats(request):
-    if 'user_id' not in request.session:
-        return redirect('/')
-    else:
-        logged_user = User.objects.filter(id=request.session['user_id'])[0]
+    if 'user_id' in request.session:
+        logged_user = User.objects.get(id=request.session['user_id'])
         all_subscriptions = Subscription.objects.filter(user = logged_user)
         
         context = {
             'all_subscriptions_count': len(all_subscriptions),
             'user' : logged_user
         }
-    return render(request, 'stats.html', context)
+        return render(request, 'stats.html', context)    
+    return redirect('/')
 
 
 
@@ -89,6 +96,7 @@ def user_account(request):
         }
         return render(request, "editUser.html", context)
     return redirect("/")  
+
 
 def process_edit_user(request):
     if 'user_id' in request.session:
@@ -122,6 +130,13 @@ def add_subscription(request):
 def process_add_subscription(request):
     if 'user_id' in request.session:
         if request.method == "POST":
+            # errors handling
+            # errors = User.objects.edit_profile_validator(request.POST)
+            # if len(errors) > 0:
+            #     for error in errors.values():
+            #         messages.error(request, error)
+            # else:
+
             logged_user = User.objects.get(id=request.session['user_id'])
 
             new_subscription = Subscription.objects.create(
@@ -141,26 +156,61 @@ def edit_subscription(request, subscription_id):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         subscription_to_edit = Subscription.objects.get(id=subscription_id)
-        context = {
-            'logged_user': logged_user,
-            'subscription_to_edit': subscription_to_edit,
-        }
-        return render(request, "editSubscription.html", context)
+        if subscription_to_edit.user == logged_user:     
+            context = {
+                'logged_user': logged_user,
+                'subscription_to_edit': subscription_to_edit,
+            }
+            return render(request, "editSubscription.html", context)
+        return redirect("/subscriptions/1")
     return redirect("/")
 
 
-def process_edit_subscription(request):
+def process_edit_subscription(request, subscription_id):
     if 'user_id' in request.session:
         if request.method == "POST":
-            subscription_to_edit = Subscription.objects.get(id=request.POST['subscription_id'])
-            subscription_to_edit.company = request.POST['company']
-            subscription_to_edit.level = request.POST['level']
-            subscription_to_edit.monthly_rate = request.POST['monthly_rate']
-            subscription_to_edit.start_date = request.POST['start_date']
-            subscription_to_edit.duration = request.POST['duration']
-            subscription_to_edit.save()
-            return redirect(f"/edit_subscription/{ subscription_to_edit.id }")
-        # update to home page once built
-        return redirect("/success")
-
+            # errors handling
+            errors = Subscription.objects.basic_validator(request.POST)
+            if len(errors) > 0:
+                for error in errors.values():
+                    messages.error(request, error)
+            else:
+                logged_user = User.objects.get(id=request.session['user_id'])
+                subscription_to_edit = Subscription.objects.get(id=request.POST['subscription_id'])
+                if subscription_to_edit.user == logged_user:     
+                    subscription_to_edit.company = request.POST['company']
+                    subscription_to_edit.level = request.POST['level']
+                    subscription_to_edit.monthly_rate = request.POST['monthly_rate']
+                    subscription_to_edit.start_date = request.POST['start_date']
+                    subscription_to_edit.duration = request.POST['duration']
+                    subscription_to_edit.save()
+        return redirect(f"/edit_subscription/{ subscription_id }")            
     return redirect("/")
+
+
+def delete_subscription(request):
+    if 'user_id' in request.session:
+        if request.method == "POST":
+            logged_user = User.objects.get(id=request.session['user_id'])
+            subscription_to_delete = Subscription.objects.get(id=request.POST['subscription_id'])
+            if subscription_to_delete.user == logged_user:     
+                subscription_to_delete.delete()
+                return redirect("/user_account")
+        return redirect("/subscriptions/1")
+    return redirect("/")
+
+
+def renew_subscription(request, subscription_id):
+    if 'user_id' in request.session:
+        if request.method == "POST":
+            logged_user = User.objects.get(id=request.session['user_id'])
+            subscription_to_renew = Subscription.objects.get(id=request.POST['subscription_id'])
+            if subscription_to_renew.user == logged_user:    
+                subscription_to_renew.start_date = datetime.now()
+                subscription_to_renew.save()
+        return redirect(f"/edit_subscription/{ subscription_id }")            
+    return redirect("/")
+
+
+
+
