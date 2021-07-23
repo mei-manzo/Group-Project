@@ -1,8 +1,6 @@
 --Notes--
 -all built html, of course, is up to Jason, I just needed
  something to work with.
--Do you mind if we pull the error check/messages from 
- lines 17-20 views.py:group_app into the models?
 
 
 
@@ -13,8 +11,8 @@
 
 
 --To_Do--
--update process_edit_subscription GET redirect 
- to home page once built
+-new subscription validator
+    -ensure no duplicate subscription entry exists
 
 
 
@@ -25,6 +23,26 @@
 
 
 --Completed--
+7/22/2021
+-added access approval to edit_subscription to confirm
+ subscription_to_edit belongs to logged_user
+-added delete_subscription
+-update process_edit_subscription GET redirect 
+ to home page once built
+-edit_subscription validations
+-added renew_account
+-code refactored
+-corrected route to edit_subscription from subscriptions
+-corrected route to process_edit_subscriptions
+-paginated subscriptions
+-corrected subscriptions routing
+-threw some suggested css into a file for subscriptions pagination
+-capitalize duration values in forms and for existing 
+ accounts in db
+-added enough memberships to user b to allow for three pages of subscriptions/paginated
+
+
+
 7/21/2021
 -added admin dashboard 
     -follow /admin route
@@ -47,3 +65,7 @@
     -edit user form built
     -validations for edit user form built
     -user_account and process_edit_user built
+-Do you mind if we pull the error check/messages from 
+ lines 17-20 views.py:group_app into the models?
+
+
