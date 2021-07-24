@@ -85,6 +85,7 @@ def subscriptions(request, order_by, page_num):
             'my_subscriptions': page,
             'num_of_pages': num_of_pages,
             'order_by': order_by,
+            'photo_company': photo_company
             
         }
         return render(request, 'subscription.html', context)    
