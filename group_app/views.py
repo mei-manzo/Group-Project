@@ -165,10 +165,10 @@ def process_add_subscription(request):
     if 'user_id' in request.session:
         if request.method == "POST":
             # errors handling
-            # errors = User.objects.edit_profile_validator(request.POST)
-            # if len(errors) > 0:
-            #     for error in errors.values():
-            #         messages.error(request, error)
+            errors = Subscription.objects.basic_validator(request.POST)
+            if len(errors) > 0:
+                for error in errors.values():
+                    messages.error(request, error)
             # else:
 
             logged_user = User.objects.get(id=request.session['user_id'])
