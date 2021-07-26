@@ -84,7 +84,12 @@
             </div>
             <div class="form-group">
                 <button class='btn btn-primary' type="submit">Update</button>
-                <a style="margin: 0px, 0px, 0px, 0px" href="" role="button" class="btn btn-danger">Delete</a>
+                <!-- <a style="margin: 0px, 0px, 0px, 0px" href="" role="button" class="btn btn-danger">Delete</a> -->
+                <form action="/delete_subscription" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
+                    <!-- <button type="submit" class="btn btn-danger">Delete this Subscription</button> -->
+                </form>
             </div>
 
         </form>
@@ -97,7 +102,7 @@
         <form action="/delete_subscription" method="POST">
             {% csrf_token %}
             <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
-            <button type="submit">Delete this Subscription</button>
+            <button type="submit" class="btn btn-danger">Delete this Subscription</button>
         </form>
     
         <!-- <form action="/renew_subscription/{{ subscription_to_edit.id }}" method="POST">
