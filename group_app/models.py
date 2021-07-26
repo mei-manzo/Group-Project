@@ -6,9 +6,7 @@ import bcrypt
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 MONEY_REGEX = re.compile('|'.join([
-    r'^\$?(\d*\.\d{1,2})$',  # e.g., $.50, .50, $1.50, $.5, .5
-    r'^\$?(\d+)$',           # e.g., $500, $5, 500, 5
-    r'^\$(\d+\.?)$',         # e.g., $5.
+    r'^\$?(\d*(\.\d\d?)?|\d+)$',
     ]))
 
 
@@ -65,7 +63,6 @@ class UserManager(models.Manager):
 class SubscriptionManager(models.Manager): #validates subscription data
     def basic_validator(self, postData):
         errors = {}
-
         if len(postData['company']) <2:
             errors["company"]="Company should be at least 2 characters."
         if len(postData['level']) <2:
