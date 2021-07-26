@@ -12,6 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
+            <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
             <a class="navbar-brand" href="#">Hello, {{ logged_user.first_name }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,10 +23,10 @@
                 <span class="navbar-text">
                         <a href="/subscriptions/sd/1" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Subscriptions</a>
-                        {% comment %} <a href="/subscriptions/stats" role="button"
+                        <a href="/subscriptions/stats" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Stats</a>
                         <a href="/user_acount" role="button"
-                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a> {% endcomment %}
+                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a> 
                         </a> <a href="/logout" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Logout</a>
                 </span>                

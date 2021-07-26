@@ -145,6 +145,7 @@ def process_edit_user(request):
                 logged_user.last_name = request.POST['last_name']
                 logged_user.email = request.POST['email']
                 logged_user.save()
+                messages.error(request, "Successfully updated username")
         return redirect("/user_account")
     return redirect("/")
 
