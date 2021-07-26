@@ -251,7 +251,7 @@ def delete_subscription(request):
             subscription_to_delete = Subscription.objects.get(id=request.POST['subscription_id'])
             if subscription_to_delete.user == logged_user:     
                 subscription_to_delete.delete()
-                return redirect("/user_account")
+                return redirect("/subscriptions/sd/1")
         return redirect("/subscriptions/sd/1")
     return redirect("/")
 
