@@ -91,14 +91,6 @@ def stats(request):
         return render(request, 'stats.html', context)    
     return redirect('/')
 
-
-
-
-
-
-
-
-
 def user_account(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
@@ -152,15 +144,26 @@ def process_add_subscription(request):
 
             logged_user = User.objects.get(id=request.session['user_id'])
 
+            # Company check with Filter (return list if multiple, single object if one, or empty list )
+            companies = Company.objects.filter(company_name=request.POST['company'])
+            if len(companies) > 0:
+                company = Company.objects.get(company_name=request.POST['company'])
+            else:
+                company = Company.objects.create(
+                    company_name = request.POST['company'],
+                    url = request.POST['company-url'],
+                )                            
+
             new_subscription = Subscription.objects.create(
                 user = logged_user,
-                company = request.POST['company'],
+                the_company = company,
+                account = request.POST['account'],
                 level = request.POST['level'],
                 monthly_rate = request.POST['monthly_rate'],
                 start_date = request.POST['start_date'],
                 duration = request.POST['duration'],
             )
-            return redirect(f"/edit_subscription/{ new_subscription.id }")
+            # return redirect(f"/edit_subscription/{ new_subscription.id }")
         return redirect("/add_subscription")
     return redirect("/")  
 
