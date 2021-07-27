@@ -96,12 +96,16 @@ def stats(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         all_subscriptions = Subscription.objects.filter(user = logged_user)
+        if len(all_subscriptions) < 1:
+            context = {
+                'all_subscriptions_count': len(all_subscriptions),
+                'user' : logged_user,
+            }
+            return render(request, 'stats.html', context) 
         data_list=[]
         for subcription in all_subscriptions:
-
             datas = DataPoint.objects.filter(subscription= subcription).all()
             data_list.append(datas)
-
         context = {
             'all_subscriptions_count': len(all_subscriptions),
             'user' : logged_user,
