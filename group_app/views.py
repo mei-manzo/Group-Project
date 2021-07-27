@@ -149,7 +149,7 @@ def process_edit_user(request):
                 logged_user.last_name = request.POST['last_name']
                 logged_user.email = request.POST['email']
                 logged_user.save()
-                messages.error(request, "Successfully updated username")
+                messages.error(request, "Successfully updated profile")
         return redirect("/user_account")
     return redirect("/")
 
@@ -212,7 +212,6 @@ def process_add_subscription(request):
                 )   
                 new_subscription.save()
                 return redirect(f"/edit_subscription/{ new_subscription.id }")
-        # return redirect("/add_subscription")
         latest_subscription = Subscription.objects.last()
         return redirect(f"/edit_subscription/{ latest_subscription.id }")
     return redirect("/")  
@@ -223,7 +222,6 @@ def edit_subscription(request, subscription_id):
         logged_user = User.objects.get(id=request.session['user_id'])
         subscription_to_edit = Subscription.objects.get(id=subscription_id)
         if subscription_to_edit.user == logged_user:     
-
             context = {
                 'logged_user': logged_user,
                 'subscription_to_edit': subscription_to_edit,
