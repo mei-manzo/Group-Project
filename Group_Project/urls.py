@@ -17,13 +17,19 @@ from django.urls import path, include
 
 # to use admin dashboard
 from django.contrib import admin
-from group_app.models import User, Subscription
+from group_app.models import User, Company, Subscription, DataPoint
 class UserAdmin(admin.ModelAdmin):
     pass
 admin.site.register(User, UserAdmin)
 class SubscriptionAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Subscription, SubscriptionAdmin)
+class CompanyAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Company, CompanyAdmin)
+class DataPointAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(DataPoint, DataPointAdmin)
 
 
 urlpatterns = [

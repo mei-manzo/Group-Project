@@ -1,15 +1,28 @@
 --Notes--
+-handle the logic for determining the number of days/month for time_change
+ and handle the logic for month spillover (ie: subscription starts feb 27 
+ and you need to add 30 days)
+    -let's try not to use monthly or lifetime until we have the logic in place
+
+- is the due_date in Subscription model intended to be for billing?
+
+-confirm password on registration is still not obscured
+
+-if we decide to include the renew function we may need to expand it 
+ such that we can allow for price changes at the time of renewal to 
+ better accomodate the building of an accurate new datapoint and to update the 
+ renew_by_date
+
+-Please note that the mainstream companies we intend to have images 
+ and stored information for must be managed via the admin panel
+    -to show up in the companies drop-down they must be checked for 
+     entered_by_admin
+
+
+
+
 -We have one more body column than header 
  column on our dashboard
--I see us headed for another issue; we have the day
- a user starts the account, and that is what Phoung is
- currently ordering by, but if we are going to want to 
- generally reference the date the subscription is due to 
- be renewed it may be wise to add that as an attribute to 
- the subscription model. This would allow us to be able to
- calculate it twice at it's creation and it's renewal rather
- than having to worry about working it out in templating for every
- subscription each time a page is loaded.
 
 
 
@@ -20,9 +33,9 @@
 
 
 --To_Do--
--new subscription validator
+-errors handling for add_subscription
     -ensure no duplicate subscription entry exists
-
+-errors handling for edit_subscription
 
 
 
@@ -32,6 +45,28 @@
 
 
 --Completed--
+7/25/2021
+-added date logic for renewal date for "Yearly" and "Bi-annually"
+ subscriptions add_subscription
+-modified models
+-deleted database and related migrations to accomodate model changes
+-created Admin superuser(see earlier noted credentials)
+-added user b
+-added 20 companies (with urls and img data) to admin added companies
+-added new inputs to add_subscription for to handle
+ model updates
+-DataPoints created at add_subscription and if monthly_rate is
+ changed in edit_subscription
+-edit_subscription logic updated to accomodate model updates
+-added date logic for renewal date for "Yearly" and "Bi-annually"
+ subscriptions edit_subscription
+-added new inputs to edit_subscription for to handle
+ model updates
+-admin panel expanded to include new models
+-added/edited a couple of subscriptions to user b to confirm client entered company
+ deletion and Datapoint creation
+
+
 7/23/2021
 -corrected hrefs for user_account in links
 -created hrefs for order_by designation subscriptions.py

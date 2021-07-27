@@ -49,7 +49,7 @@
             <tbody>
                 {% for subscription in my_subscriptions %}
                 <tr>
-                    <td>{{ subscription.company }}</td>
+                    <td>{{ subscription.company.company_name }}</td>
                     <td>{{ subscription.level }}</td>
                     <td>{{ subscription.monthly_rate }}</td>
                     <td>{{ subscription.start_date }}</td>
