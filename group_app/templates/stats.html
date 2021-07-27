@@ -13,6 +13,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
+            <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
             <a class="navbar-brand" href="#">Hello, {{user.first_name}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,9 +22,14 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto"></ul>
                 <span class="navbar-text">
+                        <a href="/add_subscription" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Add Subscription</a>
                         <a href="/subscriptions/sd/1" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Subscriptions</a>
-                        </a> <a href="/logout" role="button"
+                        </a> 
+                        <a href="/user_account" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a>
+                        <a href="/logout" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Logout</a>
                 </span>                
 
@@ -31,10 +37,32 @@
         </div>
     </nav>
     <div class="container">
-        <h1>My Subscription Analysis:</h1>
-            <p>Total subscriptions that I already had: {{all_subscriptions_count}}</p>
+        
+            <p>Total subscriptions that you already had: {{all_subscriptions_count}}</p>
     
-
+            <div class="container">
+                <h1>Your Subscription Analysis:</h1>
+                <table class="table table-dark">
+                    <thead>
+                        <th>Company:</th>
+                        <th>Monthly Rate:<th>
+                        <th>Price Change:</th>
+                        
+                        
+                    </thead>
+                    <tbody>
+                        {% for data in data_list %}
+                        <tr>
+                            <td>{{ data.subscription }}</td>
+                            <td>{{ data.monthly_rate }}</td>
+                            <td>{{ data.price_change }}</td>
+                            
+                        </tr>
+                        {% endfor %}
+        
+                    </tbody>
+                </table>
+            </div>
 
     
     

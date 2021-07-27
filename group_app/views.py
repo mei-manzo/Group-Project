@@ -5,7 +5,17 @@ from .models import *
 from datetime import datetime
 from django.core.paginator import Paginator
 
+url_company ={
+    'Netflix': 'https://www.netflix.com/',
+    'Amazon':'https://www.amazon.com/gp/video/offers/ref=dvm_us_dl_sl_go_brsa_mkw_svHxbIxqC-dc_pcrid_448130500925?ie=UTF8&gclid=EAIaIQobChMI8ou9zLX88QIVNQytBh2E7wIjEAAYASAAEgK2cvD_BwE&mrntrk=slid__pgrid_29008589832_pgeo_9033288_x__ptid_kwd-45697133742',
+    'Hulu' : 'https://www.hulu.com/welcome'
 
+}
+photo_company ={
+    'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
+    'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
+    'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
+}
 def index(request):
     return render(request, "index.html")
 
@@ -63,17 +73,20 @@ def subscriptions(request, order_by, page_num):
             order_by_field = "start_date"
         
         my_subscriptions = Subscription.objects.filter(user = logged_user).order_by(order_by_field)
-
+        
         # pagination driver
         p = Paginator(my_subscriptions, 5)
         page = p.page(page_num)
         num_of_pages = "a" * p.num_pages
+        
         
         context = {
             'user': logged_user,
             'my_subscriptions': page,
             'num_of_pages': num_of_pages,
             'order_by': order_by,
+            'photo_company': photo_company
+            
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
@@ -83,10 +96,21 @@ def stats(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         all_subscriptions = Subscription.objects.filter(user = logged_user)
-        
+        if len(all_subscriptions) < 1:
+            context = {
+                'all_subscriptions_count': len(all_subscriptions),
+                'user' : logged_user,
+            }
+            return render(request, 'stats.html', context) 
+        data_list=[]
+        for subcription in all_subscriptions:
+            datas = DataPoint.objects.filter(subscription= subcription).all()
+            data_list.append(datas)
         context = {
             'all_subscriptions_count': len(all_subscriptions),
-            'user' : logged_user
+            'user' : logged_user,
+            'my_datas' : datas,
+            'data_list' : data_list
         }
         return render(request, 'stats.html', context)    
     return redirect('/')
@@ -117,6 +141,7 @@ def process_edit_user(request):
                 logged_user.last_name = request.POST['last_name']
                 logged_user.email = request.POST['email']
                 logged_user.save()
+                messages.error(request, "Successfully updated profile")
         return redirect("/user_account")
     return redirect("/")
 
@@ -124,9 +149,11 @@ def process_edit_user(request):
 def add_subscription(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
+        all_companies = Company.objects.filter()
 
         context = {
             'logged_user': logged_user,
+            'all_companies': all_companies,
         }
         return render(request, "add_subscription.html", context)
     return redirect("/")  
@@ -136,35 +163,62 @@ def process_add_subscription(request):
     if 'user_id' in request.session:
         if request.method == "POST":
             # errors handling
-            # errors = User.objects.edit_profile_validator(request.POST)
-            # if len(errors) > 0:
-            #     for error in errors.values():
-            #         messages.error(request, error)
-            # else:
-
-            logged_user = User.objects.get(id=request.session['user_id'])
-
-            # Company check with Filter (return list if multiple, single object if one, or empty list )
-            companies = Company.objects.filter(company_name=request.POST['company'])
-            if len(companies) > 0:
-                company = Company.objects.get(company_name=request.POST['company'])
+            errors = Subscription.objects.basic_validator(request.POST)
+            if len(errors) > 0:
+                for error in errors.values():
+                    messages.error(request, error)
+                    return redirect("/add_subscription")
             else:
-                company = Company.objects.create(
-                    company_name = request.POST['company'],
-                    url = request.POST['company-url'],
-                )                            
+                print(request.session['user_id'])
+                print(request.POST['company_id'])
 
-            new_subscription = Subscription.objects.create(
-                user = logged_user,
-                the_company = company,
-                account = request.POST['account'],
-                level = request.POST['level'],
-                monthly_rate = request.POST['monthly_rate'],
-                start_date = request.POST['start_date'],
-                duration = request.POST['duration'],
-            )
-            # return redirect(f"/edit_subscription/{ new_subscription.id }")
-        return redirect("/add_subscription")
+                logged_user = User.objects.get(id=request.session['user_id'])
+                # the_company = Company.objects.filter(company_name=request.POST['company_name'])
+
+                if int(request.POST['company_id']) < 0:
+                    print('Create')
+                    new_company= Company.objects.create(
+                        company_name = request.POST['company_name'],
+                        url = request.POST['company-url']
+                    )
+                else:
+                    print('Get')
+                    new_company = Company.objects.get(id=request.POST['company_id'])
+
+                # Commented out by JGR - 07272021
+                # Validating Photo class is still to be used
+                # new_photo = Photo.objects.create(
+                #     photo_of = new_company,
+                #     image_src= photo_company[request.POST['company_name']]
+                # )
+                # new_photo.save()
+
+                new_subscription = Subscription.objects.create(
+                    user = logged_user,
+                    company = new_company,
+                    account = request.POST['account'],
+                    level = request.POST['level'],
+                    monthly_rate = request.POST['monthly_rate'],
+                    start_date = request.POST['start_date'],
+                    duration = request.POST['duration'],                    
+                )
+                messages.error(request, "Successfully added new subscription")
+                return redirect(f"/edit_subscription/{ new_subscription.id }")
+        #     elif len(the_company) > 0:
+        #         the_company = Company.objects.get(company_name=request.POST['company_name'])
+        #         new_subscription = Subscription.objects.create(
+        #             user = logged_user,
+        #             the_company = the_company[0],
+        #             company = request.POST['company_name'],
+        #             level = request.POST['level'],
+        #             monthly_rate = request.POST['monthly_rate'],
+        #             start_date = request.POST['start_date'],
+        #             duration = request.POST['duration'],
+        #         )   
+        #         new_subscription.save()
+        #         return redirect(f"/edit_subscription/{ new_subscription.id }")
+        # latest_subscription = Subscription.objects.last()
+        # return redirect(f"/edit_subscription/{ latest_subscription.id }")
     return redirect("/")  
 
 
@@ -172,11 +226,13 @@ def edit_subscription(request, subscription_id):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         subscription_to_edit = Subscription.objects.get(id=subscription_id)
-        if subscription_to_edit.user == logged_user:     
+        all_companies = Company.objects.filter()
 
+        if subscription_to_edit.user == logged_user:     
             context = {
                 'logged_user': logged_user,
                 'subscription_to_edit': subscription_to_edit,
+                'all_companies': all_companies,
             }
             return render(request, "editSubscription.html", context)
         return redirect("/subscriptions/sd/1")
@@ -195,24 +251,27 @@ def process_edit_subscription(request, subscription_id):
                 logged_user = User.objects.get(id=request.session['user_id'])
                 subscription_to_edit = Subscription.objects.get(id=request.POST['subscription_id'])
                 if subscription_to_edit.user == logged_user:     
-                    subscription_to_edit.company = request.POST['company']
+                    # subscription_to_edit.company = request.POST['company']
+                    subscription_to_edit.account = request.POST['account']
                     subscription_to_edit.level = request.POST['level']
                     subscription_to_edit.monthly_rate = request.POST['monthly_rate']
                     subscription_to_edit.start_date = request.POST['start_date']
                     subscription_to_edit.duration = request.POST['duration']
                     subscription_to_edit.save()
+                    messages.error(request, "Successfully updated subscription")
         return redirect(f"/edit_subscription/{ subscription_id }")            
     return redirect("/")
 
 
-def delete_subscription(request):
+def delete_subscription(request, subscription_id):
     if 'user_id' in request.session:
-        if request.method == "POST":
-            logged_user = User.objects.get(id=request.session['user_id'])
-            subscription_to_delete = Subscription.objects.get(id=request.POST['subscription_id'])
-            if subscription_to_delete.user == logged_user:     
-                subscription_to_delete.delete()
-                return redirect("/user_account")
+        logged_user = User.objects.get(id=request.session['user_id'])
+        subscription_to_delete = Subscription.objects.get(id=subscription_id)
+        print('Delete Subscription')
+        print(subscription_to_delete.user_id)
+        print(logged_user.id)
+        if subscription_to_delete.user_id == logged_user.id:     
+            subscription_to_delete.delete()
         return redirect("/subscriptions/sd/1")
     return redirect("/")
 

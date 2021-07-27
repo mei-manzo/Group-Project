@@ -12,6 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
+            <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
             <a class="navbar-brand" href="#">Hello, {{ logged_user.first_name }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,10 +23,10 @@
                 <span class="navbar-text">
                         <a href="/subscriptions/sd/1" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Subscriptions</a>
-                        {% comment %} <a href="/subscriptions/stats" role="button"
+                        <a href="/subscriptions/stats" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Stats</a>
                         <a href="/user_account" role="button"
-                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a> {% endcomment %}
+                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a>
                         </a> <a href="/logout" role="button"
                         class="btn btn-sm btn-info ml-2 text-white">Logout</a>
                 </span>                
@@ -45,15 +46,56 @@
             {% endif %}
         </div>      <!--end errors-->
 
-            <h1>Edit Subscription:</h1>   
+        <h1>Edit Subscription:</h1>   
 
-        <form action="/process_edit_subscription/{{ subscription_to_edit.id}}" method="POST">
+        <form action="/process_edit_subscription/{{ subscription_to_edit.id }}" method="POST">
             {% csrf_token %}
 
+            {% if subscription_to_edit.company.entered_by_admin %}
+
+                <div class="form-group">
+                    <label for='company_id'>Select a Company:</label>
+                    <select name="company_id">
+                        <option value="{{ subscription_to_edit.company.id }}">{{ subscription_to_edit.company.company_name }}</option>
+                        <option value="-1">Please select or add company</option>
+                        {% for company in all_companies %}
+                            <option value="{{ company.id }}">{{ company.company_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for='company_name'>Or Add a New One:</label>
+                    <input type="text" name="company_name" id='company_name' class='form-control'>
+                </div>
+            {% else %}
+
+                <div class="form-group">
+                    <label for='company_id'>Select a Company:</label>
+                    <select name='company_id' class='form-control'>
+                        <option value="-1">Please select or add company</option>
+                        {% for company in all_companies %}
+                            <option value="{{ company.id }}">{{ company.company_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for='company_name'>Or Add a New One:</label>
+                    <input type="text" name="company_name" id='company_name' value="{{ subscription_to_edit.company.company_name }}" class='form-control'>
+                </div>
+                
+                <div class="form-group">
+                    <label for='company-url'>Company URL:</label>
+                    <input type="url" name="company-url" id='company-url' value="{{ subscription_to_edit.company.url }}" class='form-control'>
+                </div>
+
+            {% endif %}
             <div class="form-group">
-                <label for='company'>Company:</label>
-                <input type="text" name="company" id='company' class='form-control' value="{{ subscription_to_edit.company }}">
+                <label for='account'>Account:</label>
+                <input type="text" name="account" id='account' class='form-control' value="{{ subscription_to_edit.account }}">
             </div>
+
             <div class="form-group">
                 <label for='level'>Level:</label>
                 <input type="text" name="level" id='level' class='form-control' value="{{ subscription_to_edit.level }}">
@@ -72,8 +114,8 @@
                     <option value="{{ subscription_to_edit.duration }}">{{ subscription_to_edit.duration }}</option>
                     <option value="Bi-annually">Bi-annually</option>
                     <option value="Yearly">Yearly</option>
-                    <option value="Monthly">Monthly</option>
-                    <option value="Lifetime">Lifetime</option>
+                    <!-- <option value="Monthly">Monthly</option> -->
+                    <!-- <option value="Lifetime">Lifetime</option> -->
                     <!-- <option value="yearly">Yearly</option> -->
                     <!-- <option value="monthly">Monthly</option> -->
                 </select>
@@ -83,28 +125,25 @@
             </div>
             <div class="form-group">
                 <button class='btn btn-primary' type="submit">Update</button>
-                <a style="margin: 0px, 0px, 0px, 0px" href="" role="button" class="btn btn-danger">Delete</a>
+                <!-- <a style="margin: 0px, 0px, 0px, 0px" href="" role="button" class="btn btn-danger">Delete</a> -->
             </div>
 
         </form>
 
+        <a style="height: 40px;" href="/delete_subscription/{{ subscription_to_edit.id }}" role="button" class="btn btn-danger">Delete</a>   
 
-
-
-
-
-        <form action="/delete_subscription" method="POST">
+        {% comment %} <form action="/delete_subscription" method="POST">
             {% csrf_token %}
             <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
-            <button type="submit">Delete this Subscription</button>
-        </form>
+            <button type="submit" class="btn btn-danger">Delete this Subscription</button>
+        </form> {% endcomment %}
     
-        <form action="/renew_subscription/{{ subscription_to_edit.id }}" method="POST">
+        <!-- <form action="/renew_subscription/{{ subscription_to_edit.id }}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
             <button type="submit">Renew this Subscription</button>
         </form>
-    
+     -->
     
 
 
