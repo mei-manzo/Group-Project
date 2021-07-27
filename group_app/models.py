@@ -7,9 +7,7 @@ from decimal import Decimal
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 MONEY_REGEX = re.compile('|'.join([
-    r'^\$?(\d*\.\d{1,2})$',  # e.g., $.50, .50, $1.50, $.5, .5
-    r'^\$?(\d+)$',           # e.g., $500, $5, 500, 5
-    r'^\$(\d+\.?)$',         # e.g., $5.
+    r'^\$?(\d*(\.\d\d?)?|\d+)$',
     ]))
 
 
@@ -78,6 +76,8 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["start_date"]="Must select a start date."
         if len(postData['duration']) < 1:
             errors["duration"]="Must select a duration."
+        if len(postData['start_date']) < 1:
+            errors["start_date"]="Must select a valid start date." 
         return errors
         
 
@@ -135,5 +135,6 @@ class DataPoint(models.Model):  #connect to subscription (can show one, or all)
     price_change = models.DecimalField(default = 0.00, decimal_places=2, max_digits=5)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
+
 
 
