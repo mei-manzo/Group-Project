@@ -1,6 +1,7 @@
 from django.db import models
 import re
 import bcrypt
+from decimal import Decimal
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -91,18 +92,12 @@ class User(models.Model):
 
 class Company(models.Model): #one-to-many with photos, subscriptions
     company_name = models.CharField(max_length=255)
-    url = models.TextField()#made text field in case urls are very long
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add = True)
-
-class Photo(models.Model):#company photos
-    photo_of = models.ForeignKey(
-        Company,
-        related_name="company_photos",
-        on_delete=models.CASCADE
-    )
-    image_src = models.TextField()#made text field in case img urls are very long
-    image_alt = models.CharField(max_length=255)
+    entered_by_admin = models.BooleanField(default=False)
+    url = models.TextField(null=True, blank=True)#made text field in case urls are very long
+    # to call in templates use:
+    # <img src="{% static 'img/'|add:company.img_src %}" alt="{{ company.img_alt }}">
+    image_src = models.TextField(default="no_img_available.jpg", null=True, blank=True)#made text field in case img urls are very long
+    image_alt = models.CharField(default="no image available",max_length=255, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
@@ -112,30 +107,32 @@ class Subscription(models.Model): #company's / user's subscriptions
         related_name = "subscriptions", 
         on_delete = models.CASCADE
     )
-    the_company = models.ForeignKey(
+    company = models.ForeignKey(
         Company, 
         related_name = "company_subscriptions", 
         on_delete = models.CASCADE
     )
     account = models.CharField(max_length = 255) #for different accounts from same company
-    company = models.CharField(max_length = 255)#hulu, amazon prime, etc
+    # company = models.CharField(max_length = 255)#hulu, amazon prime, etc
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
-    monthly_rate = models.CharField(max_length = 255)
+    monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
     start_date = models.DateField()#can be selected from a clickable calender to deal with formatting
-    due_date = models.CharField(max_length = 10)#made charfield so that can designate just one day of month - the "9th" of every month etc.
+    renew_by_date = models.DateField(null=True, blank=True)
+    # due_date = models.CharField(max_length = 10)#made charfield so that can designate just one day of month - the "9th" of every month etc.
     duration = models.CharField(max_length = 255) #can select from dropdown? auto-renew, 12-month, etc
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
     objects = SubscriptionManager()#use to validate subscription data
 
 class DataPoint(models.Model):  #connect to subscription (can show one, or all)
-    subscription = models.OneToOneField(
+    subscription = models.ForeignKey(
         Subscription,
+        related_name = "subscription_datapoints",
         on_delete=models.CASCADE,
         primary_key = True
     )
-    monthly_rate = models.CharField(max_length = 255)
-    price_change = models.CharField(max_length = 255)
+    monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
+    price_change = models.DecimalField(default = 0.00, decimal_places=2, max_digits=5)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
