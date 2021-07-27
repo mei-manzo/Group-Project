@@ -4,6 +4,11 @@ import bcrypt
 from .models import *
 from datetime import datetime
 from django.core.paginator import Paginator
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+
+
 
 url_company ={
     'Netflix': 'https://www.netflix.com/',
@@ -90,8 +95,20 @@ def subscriptions(request, order_by, page_num):
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
+def get_graph():
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    buffer.close()
+    pass
 
+def get_plot(x,y):
 
+    graph = get_graph()
+    return graph
 def stats(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
@@ -102,15 +119,25 @@ def stats(request):
                 'user' : logged_user,
             }
             return render(request, 'stats.html', context) 
-        data_list=[]
-        for subcription in all_subscriptions:
-            datas = DataPoint.objects.filter(subscription= subcription).all()
-            data_list.append(datas)
+        
+        company={}
+        for subscription in all_subscriptions:
+            company_name = subscription.company.company_name
+            company_value = {}
+
+            
+            data_points = DataPoint.objects.filter(subscription= subscription).all()
+            print(data_points)
+            for data in data_points:
+                data = data.created_at
+                price = data.monthly_rate
+                company_value[data] = price
+            company[company_name] = company_value  
+        
         context = {
             'all_subscriptions_count': len(all_subscriptions),
             'user' : logged_user,
-            'my_datas' : datas,
-            'data_list' : data_list
+            
         }
         return render(request, 'stats.html', context)    
     return redirect('/')
