@@ -173,8 +173,8 @@ def process_add_subscription(request):
             if len(errors) > 0:
                 for error in errors.values():
                     messages.error(request, error)
+                    return redirect("/add_subscription")
             # else:
-
             logged_user = User.objects.get(id=request.session['user_id'])
             the_company = Company.objects.filter(company_name=request.POST['company'])
             if len(the_company) == 0:
@@ -182,10 +182,12 @@ def process_add_subscription(request):
                     company_name = request.POST['company'],
                     url = url_company[request.POST['company']]
                 )
+                new_company.save()
                 new_photo = Photo.objects.create(
                     photo_of = new_company,
                     image_src= photo_company[request.POST['company']]
                 )
+                new_photo.save()
                 new_subscription = Subscription.objects.create(
                     user = logged_user,
                     the_company = new_company,
@@ -196,7 +198,9 @@ def process_add_subscription(request):
                     duration = request.POST['duration'],
                     
                 )
-            else:
+                new_subscription.save()
+                return redirect(f"/edit_subscription/{ new_subscription.id }")
+            elif len(the_company) > 0:
                 new_subscription = Subscription.objects.create(
                     user = logged_user,
                     the_company = the_company[0],
@@ -206,8 +210,11 @@ def process_add_subscription(request):
                     start_date = request.POST['start_date'],
                     duration = request.POST['duration'],
                 )   
-            return redirect(f"/edit_subscription/{ new_subscription.id }")
-        return redirect("/add_subscription")
+                new_subscription.save()
+                return redirect(f"/edit_subscription/{ new_subscription.id }")
+        # return redirect("/add_subscription")
+        latest_subscription = Subscription.objects.last()
+        return redirect(f"/edit_subscription/{ latest_subscription.id }")
     return redirect("/")  
 
 
@@ -244,6 +251,7 @@ def process_edit_subscription(request, subscription_id):
                     subscription_to_edit.start_date = request.POST['start_date']
                     subscription_to_edit.duration = request.POST['duration']
                     subscription_to_edit.save()
+                    messages.error(request, "Successfully updated subscription")
         return redirect(f"/edit_subscription/{ subscription_id }")            
     return redirect("/")
 

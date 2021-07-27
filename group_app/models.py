@@ -75,6 +75,8 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["start_date"]="Must select a start date."
         if len(postData['duration']) < 1:
             errors["duration"]="Must select a duration."
+        if len(postData['start_date']) < 1:
+            errors["start_date"]="Must select a valid start date." 
         return errors
         
 
