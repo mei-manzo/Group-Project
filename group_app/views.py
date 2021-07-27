@@ -220,13 +220,9 @@ def process_add_subscription(request):
             ###
             new_subscription = Subscription.objects.create(
                 user = logged_user,
-                company = request.POST['company'],
                 company = this_company,
                 account = request.POST['account'],
                 level = request.POST['level'],
-                monthly_rate = request.POST['monthly_rate'],
-                start_date = request.POST['start_date'],
-                duration = request.POST['duration'],
                 monthly_rate = Decimal(request.POST['monthly_rate']),
                 start_date = st_date,
                 renew_by_date = date_plus_time,
