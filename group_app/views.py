@@ -176,22 +176,24 @@ def process_add_subscription(request):
                     return redirect("/add_subscription")
             # else:
             logged_user = User.objects.get(id=request.session['user_id'])
-            the_company = Company.objects.filter(company_name=request.POST['company'])
+            print(request.POST['company_id'])
+            company_name =''
+            if request.POST['company_id'] == "-1":
+                company_name = request.POST['company_name'] 
+            else:
+                company_name = request.POST['company_id']
+            the_company = Company.objects.filter(company_name=request.POST['company_id'])
+            
             if len(the_company) == 0:
                 new_company= Company.objects.create(
-                    company_name = request.POST['company'],
-                    url = url_company[request.POST['company']]
+                    company_name = company_name,
+                    url = url_company[company_name]    
                 )
                 new_company.save()
-                new_photo = Photo.objects.create(
-                    photo_of = new_company,
-                    image_src= photo_company[request.POST['company']]
-                )
-                new_photo.save()
                 new_subscription = Subscription.objects.create(
                     user = logged_user,
-                    the_company = new_company,
-                    company = request.POST['company'],
+                    
+                    company = new_company,
                     level = request.POST['level'],
                     monthly_rate = request.POST['monthly_rate'],
                     start_date = request.POST['start_date'],
