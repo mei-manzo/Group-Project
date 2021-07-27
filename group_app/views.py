@@ -231,6 +231,7 @@ def edit_subscription(request, subscription_id):
     return redirect("/")
 
 
+
 def process_edit_subscription(request, subscription_id):
     if 'user_id' in request.session:
         if request.method == "POST":
