@@ -31,8 +31,7 @@ class UserManager(models.Manager):
         
     def login_validator(self, postData):
         errors = {}
-        email = postData['email']
-        # existing_user = self.filter(email=postData['email'])
+        # email = postData['email']
         existing_user = User.objects.filter(email=postData['email'])
         if len(postData['email']) == 0:
             errors['email'] = "Must enter an email"
@@ -64,8 +63,9 @@ class UserManager(models.Manager):
 class SubscriptionManager(models.Manager): #validates subscription data
     def basic_validator(self, postData):
         errors = {}
-        if len(postData['company']) <2:
-            errors["company"]="Company should be at least 2 characters."
+
+        # if len(postData['company']) <2:
+        #     errors["company"]="Company should be at least 2 characters."
         if len(postData['level']) <2:
             errors["level"]="Subscription level should be at least 2 characters."
         if len(postData['monthly_rate']) < 1:
@@ -89,6 +89,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
     objects = UserManager()
+
 
 class Company(models.Model): #one-to-many with photos, subscriptions
     company_name = models.CharField(max_length=255)
@@ -129,11 +130,11 @@ class DataPoint(models.Model):  #connect to subscription (can show one, or all)
         Subscription,
         related_name = "subscription_datapoints",
         on_delete=models.CASCADE,
-        primary_key = True
     )
     monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
     price_change = models.DecimalField(default = 0.00, decimal_places=2, max_digits=5)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
+
 
 
