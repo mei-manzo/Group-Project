@@ -52,11 +52,47 @@
         <table class="table table-dark">
             <thead>
                 <th><a href=""></a></th>
-                <th><a href="/subscriptions/cn/1">Company</a></th>
-                <th><a href="/subscriptions/ac/1">Account</a></th>
-                <th><a href="/subscriptions/st/1">Type</a></th>
-                <th><a href="/subscriptions/mr/1">Monthly Rate</a></th>
-                <th><a href="/subscriptions/sd/1">Start Date</a><th>                
+                <!-- <th><a href="/subscriptions/_cn/1">Company</a></th> -->
+                <th>
+                    Company
+                    <a href="/subscriptions/cn/1">&#9650;</a>
+                    <a href="/subscriptions/_cn/1">&#9660;</a>
+                </th>
+
+                <!-- <th><a href="/subscriptions/ac/1">Account</a></th> -->
+                <th>
+                    Account
+                    <a href="/subscriptions/ac/1">&#9650;</a>
+                    <a href="/subscriptions/_ac/1">&#9660;</a>
+                </th>
+                
+                
+                <!-- <th><a href="/subscriptions/st/1">Type</a></th> -->
+                <th>
+                    Type
+                    <a href="/subscriptions/st/1">&#9650;</a>
+                    <a href="/subscriptions/_st/1">&#9660;</a>
+                </th>
+
+
+                <!-- <th><a href="/subscriptions/mr/1">Monthly Rate</a></th> -->
+                <th>
+                    Monthly Rate
+                    <a href="/subscriptions/mr/1">&#9650;</a>
+                    <a href="/subscriptions/_mr/1">&#9660;</a>
+                </th>
+
+
+                <!-- <th><a href="/subscriptions/sd/1">Start Date</a><th>                 -->
+                <th>
+                    Start Date
+                    <a href="/subscriptions/sd/1">&#9650;</a>
+                    <a href="/subscriptions/_sd/1">&#9660;</a>
+                </th>
+            
+            
+            
+            
             </thead>
             <tbody>
                 {% for subscription in my_subscriptions %}

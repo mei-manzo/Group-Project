@@ -75,12 +75,22 @@ def subscriptions(request, order_by, page_num):
         # order_by selected column
         if order_by == "cn":
             order_by_field = "company__company_name" 
+        elif order_by == "_cn":
+            order_by_field = "-company__company_name" 
         elif order_by == "ac":
             order_by_field = "account"
+        elif order_by == "_ac":
+            order_by_field = "-account"
         elif order_by == "st":
             order_by_field = "level"
+        elif order_by == "_st":
+            order_by_field = "-level"
         elif order_by == "mr":
             order_by_field = "monthly_rate"
+        elif order_by == "_mr":
+            order_by_field = "-monthly_rate"
+        elif order_by == "_sd":
+            order_by_field = "-start_date"
         else:
             order_by_field = "start_date"
         
