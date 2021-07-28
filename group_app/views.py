@@ -67,9 +67,11 @@ def subscriptions(request, order_by, page_num):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         
-        # order by director
+        # order by selected column
         if order_by == "cn":
             order_by_field = "company"
+        elif order_by == "ac":
+            order_by_field = "account"
         elif order_by == "st":
             order_by_field = "level"
         elif order_by == "mr":
@@ -119,13 +121,6 @@ def stats(request):
         }
         return render(request, 'stats.html', context)    
     return redirect('/')
-
-
-
-
-
-
-
 
 
 def user_account(request):
@@ -214,10 +209,18 @@ def process_add_subscription(request):
             # gets or creates company to be subscribed to 
             #need to determine if company name not in db
             # if request.POST['company_id'] == "-1":
-            if request.POST['company_name'] not in default_companies:
-                this_company = Company.objects.create(
-                    company_name = request.POST['company_name']
-                )
+
+            print(request.POST['company_id'])
+            if int(request.POST['company_id']) < 0:
+
+                if request.POST['company_name'] not in default_companies:
+                    this_company = Company.objects.create(
+                        company_name = request.POST['company_name']
+                    )
+                else:
+                    messages.error(request, "Company Already Exists Please Re-Select!")
+                    return redirect("/add_subscription")
+                    # this_company = Company.objects.get(id= request.POST['company_id'])
             else:
                 this_company = Company.objects.get(id= request.POST['company_id'])
 
@@ -238,6 +241,7 @@ def process_add_subscription(request):
                 subscription = new_subscription,
                 monthly_rate = Decimal(request.POST['monthly_rate']),
             )
+            messages.error(request, "Subscription Successfully Added!")
             return redirect(f"/edit_subscription/{ new_subscription.id }")
         return redirect("/add_subscription")
     return redirect("/")  
@@ -367,6 +371,7 @@ def delete_subscription(request):
             subscription_to_delete = Subscription.objects.get(id=request.POST['subscription_id'])
             if subscription_to_delete.user == logged_user:     
                 subscription_to_delete.delete()
+                messages.error(request, "Subscription Successfully Deleted!")
                 return redirect("/subscriptions/sd/1")
         return redirect("/subscriptions/sd/1")
     return redirect("/")
