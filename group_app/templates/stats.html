@@ -38,18 +38,11 @@
     </nav>
     <div class="container">
         
-            <p>Total subscriptions that you already had: {{all_subscriptions_count}}</p>
-    
-            
-                        
-           
-            {% for graph in list_graph %}
+        <p>Total subscriptions that you already had: {{all_subscriptions_count}}</p>
+        {% for graph in list_graph %}
                     <img src="data:image/png;base64, {{graph|safe}}">
             {% endfor %}
-
-    
-    
-
-    
+            
+    </div>                   
 </body>
 </html>

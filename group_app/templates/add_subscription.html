@@ -35,7 +35,6 @@
     </nav>
 
     <div class="container">
-
         <div id="errors">
             {% if messages %}
             <ul>    
@@ -51,22 +50,6 @@
         <form action="/process_add_subscription" method="POST">
             {% csrf_token %}
 
-
-
-
-            <div class="form-group">
-                <label for='company_id'>Select a Company:</label>
-                <select name="company_id">
-                    <option value="-1">Please select or add company</option>
-                    {% for company in all_companies %}
-                        <option value="{{ company.id }}">{{ company.company_name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for='company_name'>Or Add a New One:</label>
-                <input type="text" name="company_name" id='company_name' class='form-control'>
-            </div>
             <div class="form-group">
                 <label for='company_id'>Select a Company:</label>
                 <select name="company_id">
@@ -82,13 +65,9 @@
             </div>
 
             <div class="form-group">
-                <!-- <label for='company'>Company:</label>
-                <input type="text" name="company" id='company' class='form-control'> -->
                 <label for='account'>Account:</label>
                 <input type="text" name="account" id='account' class='form-control'>
             </div>
-            
-            
             
             <div class="form-group">
                 <label for='level'>Level:</label>
@@ -105,21 +84,22 @@
             <div class="form-group">
                 <label for='duration'>Duration:</label>
                 <select name="duration" id='duration' class='form-control'>
+                    <option value="-1">-Select Duration of Memebership-</option>                    
                     <option value="Bi-annually">Bi-annually</option>
                     <option value="Yearly">Yearly</option>
-                    <!-- <option value="Monthly">Monthly</option> -->
-                    <!-- <option value="Lifetime">Lifetime</option> -->
-                    <!-- <option value="yearly">Yearly</option> -->
-                    <!-- <option value="monthly">Monthly</option> -->
                 </select>
             </div>
             <div class="form-group">
+
+
+
+                <input type="hidden" name="user_id" value="{{ logged_user.id }}">
+                
+                
+                
                 <button class='btn btn-primary' type="submit">Add Subscription</button>
             </div>
-
         </form>
     </div>
-
 </body>
-
 </html>

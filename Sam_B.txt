@@ -1,28 +1,31 @@
 --Notes--
--handle the logic for determining the number of days/month for time_change
- and handle the logic for month spillover (ie: subscription starts feb 27 
- and you need to add 30 days)
-    -let's try not to use monthly or lifetime until we have the logic in place
+-monthly_rate regex not comfirmed talk to Mei
 
-- is the due_date in Subscription model intended to be for billing?
+-confirm hidden input for add/edit_subscription integrated properly
+
+-I tested my img call just to make sure I wasn't sending Jason down
+ the wrong road with this. It works so I left it in place, just 
+ commented out
+    -can we move the company image into the same cell as the company name
+
+-can we move the pagination buttons to just below the subscriptions table
+    -or maybe switch the order of the tables?
+
+-add delete button to renewal chart actions column
+
+-What changes are we going to allow at renewal?
+    -do we wish to make it's own confirmation page?
+
+
+-I've got two delete_subscription buttons in my editSubscription.html
 
 -confirm password on registration is still not obscured
 
--if we decide to include the renew function we may need to expand it 
- such that we can allow for price changes at the time of renewal to 
- better accomodate the building of an accurate new datapoint and to update the 
- renew_by_date
-
 -Please note that the mainstream companies we intend to have images 
  and stored information for must be managed via the admin panel
-    -to show up in the companies drop-down they must be checked for 
+    -to show up in the companies drop-down they must be checked True for 
      entered_by_admin
 
-
-
-
--We have one more body column than header 
- column on our dashboard
 
 
 
@@ -33,9 +36,10 @@
 
 
 --To_Do--
--errors handling for add_subscription
-    -ensure no duplicate subscription entry exists
--errors handling for edit_subscription
+-if we decide to include the renew function we may need to expand it 
+ such that we can allow for price changes at the time of renewal to 
+ better accomodate the building of an accurate new datapoint and to update the 
+ renew_by_date
 
 
 
@@ -45,6 +49,20 @@
 
 
 --Completed--
+7/28/2021
+-added hidden input to add_subscription and edit_subscription form
+-errors handling for process_add_subscription
+    -monthly_rate regex not comfirmed talk to Mei
+    -ensure no duplicate subscription entry exists
+-errors handling for process_edit_subscription
+-company_name order_by corrected
+-corrected process_edit_subscription to handle account attribute
+-added further validations to process_edit_subscription
+-updated subscriptions to correct renewal chart for model updates
+-housekeeping
+-deleted extra image files
+-added further order_by functionality to subscriptions table
+
 7/25/2021
 -added date logic for renewal date for "Yearly" and "Bi-annually"
  subscriptions add_subscription
@@ -92,7 +110,6 @@
 -capitalize duration values in forms and for existing 
  accounts in db
 -added enough memberships to user b to allow for three pages of subscriptions/paginated
-
 
 
 7/21/2021
