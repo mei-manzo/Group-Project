@@ -17,7 +17,7 @@ from django.urls import path, include
 
 # to use admin dashboard
 from django.contrib import admin
-from group_app.models import User, Company, Subscription, DataPoint
+from group_app.models import User, Subscription, Company, DataPoint
 class UserAdmin(admin.ModelAdmin):
     pass
 admin.site.register(User, UserAdmin)

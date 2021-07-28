@@ -102,7 +102,6 @@ class Company(models.Model): #one-to-many with photos, subscriptions
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
-
 class Subscription(models.Model): #company's / user's subscriptions
     user = models.ForeignKey(
         User, 
@@ -115,6 +114,7 @@ class Subscription(models.Model): #company's / user's subscriptions
         on_delete = models.CASCADE
     )
     account = models.CharField(max_length = 255) #for different accounts from same company
+    # company = models.CharField(max_length = 255)#hulu, amazon prime, etc
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
     monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
     start_date = models.DateField()#can be selected from a clickable calender to deal with formatting
@@ -128,7 +128,7 @@ class Subscription(models.Model): #company's / user's subscriptions
 class DataPoint(models.Model):  #connect to subscription (can show one, or all)
     subscription = models.ForeignKey(
         Subscription,
-        related_name = "subscription_datapoints", 
+        related_name = "subscription_datapoints",
         on_delete=models.CASCADE,
     )
     monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
