@@ -40,29 +40,12 @@
         
             <p>Total subscriptions that you already had: {{all_subscriptions_count}}</p>
     
-            <div class="container">
-                <h1>Your Subscription Analysis:</h1>
-                <table class="table table-dark">
-                    <thead>
-                        <th>Company:</th>
-                        <th>Monthly Rate:<th>
-                        <th>Price Change:</th>
+            
                         
-                        
-                    </thead>
-                    <tbody>
-                        {% for data in data_list %}
-                        <tr>
-                            <td>{{ data.subscription }}</td>
-                            <td>{{ data.monthly_rate }}</td>
-                            <td>{{ data.price_change }}</td>
-                            
-                        </tr>
-                        {% endfor %}
-        
-                    </tbody>
-                </table>
-            </div>
+           
+            {% for graph in list_graph %}
+                    <img src="data:image/png;base64, {{graph|safe}}">
+            {% endfor %}
 
     
     
