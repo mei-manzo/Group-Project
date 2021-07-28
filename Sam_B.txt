@@ -1,14 +1,17 @@
 --Notes--
 -monthly_rate regex not comfirmed talk to Mei
+
 -confirm hidden input for add/edit_subscription integrated properly
 
--I test my img call just to make sure I wasn't sending Jason down
+-I tested my img call just to make sure I wasn't sending Jason down
  the wrong road with this. It works so I left it in place, just 
  commented out
     -can we move the company image into the same cell as the company name
 
 -can we move the pagination buttons to just below the subscriptions table
+    -or maybe switch the order of the tables?
 
+-add delete button to renewal chart actions column
 
 -What changes are we going to allow at renewal?
     -do we wish to make it's own confirmation page?
