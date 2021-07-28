@@ -12,19 +12,19 @@ import numpy as np
 
 
 
-url_company ={
-    'Netflix': 'https://www.netflix.com/',
-    'Amazon':'https://www.amazon.com/gp/video/offers/ref=dvm_us_dl_sl_go_brsa_mkw_svHxbIxqC-dc_pcrid_448130500925?ie=UTF8&gclid=EAIaIQobChMI8ou9zLX88QIVNQytBh2E7wIjEAAYASAAEgK2cvD_BwE&mrntrk=slid__pgrid_29008589832_pgeo_9033288_x__ptid_kwd-45697133742',
-    'Hulu' : 'https://www.hulu.com/welcome'
+# url_company ={
+#     'Netflix': 'https://www.netflix.com/',
+#     'Amazon':'https://www.amazon.com/gp/video/offers/ref=dvm_us_dl_sl_go_brsa_mkw_svHxbIxqC-dc_pcrid_448130500925?ie=UTF8&gclid=EAIaIQobChMI8ou9zLX88QIVNQytBh2E7wIjEAAYASAAEgK2cvD_BwE&mrntrk=slid__pgrid_29008589832_pgeo_9033288_x__ptid_kwd-45697133742',
+#     'Hulu' : 'https://www.hulu.com/welcome'
+# }
 
-}
-photo_company ={
-    'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
-    'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
-    'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
-}
+# photo_company ={
+#     'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
+#     'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
+#     'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
+# }
 
-default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
+# default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
 
 def index(request):
     return render(request, "index.html")
@@ -72,15 +72,25 @@ def subscriptions(request, order_by, page_num):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         
-        # order by selected column
+        # order_by selected column
         if order_by == "cn":
-            order_by_field = "company"
+            order_by_field = "company__company_name" 
+        elif order_by == "_cn":
+            order_by_field = "-company__company_name" 
         elif order_by == "ac":
             order_by_field = "account"
+        elif order_by == "_ac":
+            order_by_field = "-account"
         elif order_by == "st":
             order_by_field = "level"
+        elif order_by == "_st":
+            order_by_field = "-level"
         elif order_by == "mr":
             order_by_field = "monthly_rate"
+        elif order_by == "_mr":
+            order_by_field = "-monthly_rate"
+        elif order_by == "_sd":
+            order_by_field = "-start_date"
         else:
             order_by_field = "start_date"
         
@@ -91,14 +101,13 @@ def subscriptions(request, order_by, page_num):
         page = p.page(page_num)
         num_of_pages = "a" * p.num_pages
         
-        
         context = {
             'user': logged_user,
             'my_subscriptions': page,
             'num_of_pages': num_of_pages,
             'order_by': order_by,
-            'photo_company': photo_company
-            
+            'near_due_subscriptions': Subscription.objects.filter(user=logged_user).order_by("renew_by_date")[:6],
+            # 'photo_company': photo_company            
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
@@ -145,7 +154,7 @@ def stats(request):
             company_name = subscription.company.company_name
             company_date_price = {}
 
-            
+        
             data_points = DataPoint.objects.filter(subscription= subscription).all()
 
             for data in data_points:
@@ -211,78 +220,58 @@ def process_add_subscription(request):
     if 'user_id' in request.session:
         if request.method == "POST":
             # errors handling
-            # errors = Subscription.objects.basic_validator(request.POST)
-            # if len(errors) > 0:
-            #     for error in errors.values():
-            #         messages.error(request, error)
-            #         return redirect("/add_subscription")
-            # else:
-            logged_user = User.objects.get(id=request.session['user_id'])
-            st_date = request.POST['start_date']
-            sub_duration = request.POST['duration']
+            errors = Subscription.objects.add_subscription_validator(request.POST)
+            if len(errors) > 0:
+                for error in errors.values():
+                    messages.error(request, error)
+                return redirect("/add_subscription")
+            else:
+                logged_user = User.objects.get(id=request.session['user_id'])
+                st_date = request.POST['start_date']
+                sub_duration = request.POST['duration']
 
-            # figure out time displacement
-            # options ("Bi-annually", "Yearly", "Monthly", "Lifetime")
-            if sub_duration == "Bi-annually":
-                time_change = 2
-            elif sub_duration == "Yearly":
-                time_change = 1
-            # elif sub_duration == "Monthly":
-                # figure out time shift in days given the month
-            # elif sub_duration == "Lifetime":
+                # figure out time displacement
+                # options ("Bi-annually", "Yearly")
+                if sub_duration == "Bi-annually":
+                    time_change = 2
+                elif sub_duration == "Yearly":
+                    time_change = 1
 
-            s_date = st_date.split("-")
+                s_date = st_date.split("-")
 
-            if sub_duration == "Bi-annually" or sub_duration == "Yearly":
-                add_time = int(s_date[0])+time_change
-                s_date[0] = str(add_time)
-                renew_date = "-".join(s_date)
-                date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')    
-            # elif sub_duration == "Monthly":
-            #     add_time = int(s_date[1])+time_change
-            #     # Need Logic to handle month spillover
-            #     s_date[1] = str(add_time)
-            #     renew_date = "-".join(s_date)
-            #     date_plus_time = datetime.datetime.strptime(renew_date, '%Y-%m-%d')
-            # else:
-            #     date_plus_time = None
-
-            # gets or creates company to be subscribed to 
-            # if request.POST['company_id'] == "-1":
-
-            print(request.POST['company_id'])
-            if int(request.POST['company_id']) < 0:
-
-                if request.POST['company_name'] not in default_companies:
+                if sub_duration == "Bi-annually" or sub_duration == "Yearly":
+                    add_time = int(s_date[0])+time_change
+                    s_date[0] = str(add_time)
+                    renew_date = "-".join(s_date)
+                    date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')        
+            
+                # gets or creates company to be subscribed to 
+                if request.POST['company_id'] == "-1":
                     this_company = Company.objects.create(
                         company_name = request.POST['company_name']
                     )
                 else:
-                    messages.error(request, "Company Already Exists Please Re-Select!")
-                    return redirect("/add_subscription")
-                    # this_company = Company.objects.get(id= request.POST['company_id'])
-            else:
-                this_company = Company.objects.get(id= request.POST['company_id'])
+                    this_company = Company.objects.get(id= request.POST['company_id'])
+                    
+                # creates new subscription
+                new_subscription = Subscription.objects.create(
+                    user = logged_user,
+                    company = this_company,
+                    account = request.POST['account'],
+                    level = request.POST['level'],
+                    monthly_rate = Decimal(request.POST['monthly_rate']),
+                    start_date = st_date,
+                    renew_by_date = date_plus_time,
+                    duration = sub_duration,
+                )
 
-            # creates new subscription
-            ###
-            new_subscription = Subscription.objects.create(
-                user = logged_user,
-                company = this_company,
-                account = request.POST['account'],
-                level = request.POST['level'],
-                monthly_rate = Decimal(request.POST['monthly_rate']),
-                start_date = st_date,
-                renew_by_date = date_plus_time,
-                duration = sub_duration,
-            )
-            # sets initial datapoint for the subscription
-            DataPoint.objects.create(
-                subscription = new_subscription,
-                monthly_rate = Decimal(request.POST['monthly_rate']),
-            )
-            messages.error(request, "Subscription Successfully Added!")
-            return redirect(f"/edit_subscription/{ new_subscription.id }")
+                # sets initial datapoint for the subscription
+                DataPoint.objects.create(
+                    subscription = new_subscription,
+                    monthly_rate = Decimal(request.POST['monthly_rate']),
+                )
+                messages.error(request, "Subscription Successfully Added!")
+                return redirect(f"/edit_subscription/{ new_subscription.id }")
         return redirect("/add_subscription")
     return redirect("/")  
 
@@ -305,103 +294,79 @@ def edit_subscription(request, subscription_id):
 def process_edit_subscription(request, subscription_id):
     if 'user_id' in request.session:
         if request.method == "POST":
-            # errors = Subscription.objects.basic_validator(request.POST)
-            # if len(errors) > 0:
-            #     for error in errors.values():
-            #         messages.error(request, error)
-            # else:
-            logged_user = User.objects.get(id=request.session['user_id'])
-            subscription_to_edit = Subscription.objects.get(id=request.POST['subscription_id'])
-            if subscription_to_edit.user == logged_user:    
+            # errors handling
+            errors = Subscription.objects.edit_subscription_validator(request.POST)
+            if len(errors) > 0:
+                for error in errors.values():
+                    messages.error(request, error)
+            else:
+                logged_user = User.objects.get(id=request.session['user_id'])
+                subscription_to_edit = Subscription.objects.get(id=request.POST['subscription_id'])
+                if subscription_to_edit.user == logged_user:    
 
-                if request.POST['company_id'] == "-1":
-                    if subscription_to_edit.company.entered_by_admin:
-                        this_company = Company.objects.create(
-                        company_name = request.POST['company_name']
-                        )
-                        subscription_to_edit.company = this_company
-                    else:
-                        if subscription_to_edit.company.company_name != request.POST['company_name']:
-                            company_to_delete_id = subscription_to_edit.company.id
-                            company_to_delete = Company.objects.get(id=company_to_delete_id)
+                    if request.POST['company_id'] == "-1":
+                        if subscription_to_edit.company.entered_by_admin:
                             this_company = Company.objects.create(
-                                company_name = request.POST['company_name']
+                            company_name = request.POST['company_name']
                             )
                             subscription_to_edit.company = this_company
-                            company_to_delete.delete()
-                else:
-                    if subscription_to_edit.company.entered_by_admin:
-                        this_company = Company.objects.get(id= request.POST['company_id'])
-                        subscription_to_edit.company = this_company
+                        else:
+                            if subscription_to_edit.company.company_name != request.POST['company_name']:
+                                company_to_delete_id = subscription_to_edit.company.id
+                                company_to_delete = Company.objects.get(id=company_to_delete_id)
+                                this_company = Company.objects.create(
+                                    company_name = request.POST['company_name']
+                                )
+                                subscription_to_edit.company = this_company
+                                company_to_delete.delete()
                     else:
-                        company_to_delete_id = subscription_to_edit.company.id
-                        company_to_delete = Company.objects.get(id=company_to_delete_id)
-                        this_company = Company.objects.get(id= request.POST['company_id'])
-                        subscription_to_edit.company = this_company
-                        company_to_delete.delete()
+                        if subscription_to_edit.company.entered_by_admin:
+                            this_company = Company.objects.get(id= request.POST['company_id'])
+                            subscription_to_edit.company = this_company
+                        else:
+                            company_to_delete_id = subscription_to_edit.company.id
+                            company_to_delete = Company.objects.get(id=company_to_delete_id)
+                            this_company = Company.objects.get(id= request.POST['company_id'])
+                            subscription_to_edit.company = this_company
+                            company_to_delete.delete()
 
+                    subscription_to_edit.level = request.POST['level']
 
+                    if subscription_to_edit.monthly_rate != Decimal(request.POST['monthly_rate']):
+                        price_change = subscription_to_edit.monthly_rate - Decimal(request.POST['monthly_rate'])
+                        DataPoint.objects.create(
+                            subscription = subscription_to_edit,
+                            monthly_rate = Decimal(request.POST['monthly_rate']),
+                            price_change = price_change,
+                        )
+                        subscription_to_edit.monthly_rate = Decimal(request.POST['monthly_rate'])
 
+                    st_date = request.POST['start_date']
+                    sub_duration = request.POST['duration']
 
+                    # figure out time displacement
+                    # options ("Bi-annually", "Yearly")
+                    if sub_duration == "Bi-annually":
+                        time_change = 2
+                    elif sub_duration == "Yearly":
+                        time_change = 1
 
+                    s_date = st_date.split("-")
 
-                subscription_to_edit.level = request.POST['level']
+                    if sub_duration == "Bi-annually" or sub_duration == "Yearly":
+                        add_time = int(s_date[0])+time_change
+                        s_date[0] = str(add_time)
+                        renew_date = "-".join(s_date)
+                        date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')    
 
+                    subscription_to_edit.account = request.POST['account']
+                    subscription_to_edit.start_date = st_date
+                    subscription_to_edit.duration = sub_duration
+                    subscription_to_edit.renew_by_date = date_plus_time
 
-
-
-                if subscription_to_edit.monthly_rate != Decimal(request.POST['monthly_rate']):
-                    price_change = subscription_to_edit.monthly_rate - Decimal(request.POST['monthly_rate'])
-                    DataPoint.objects.create(
-                        subscription = subscription_to_edit,
-                        monthly_rate = Decimal(request.POST['monthly_rate']),
-                        price_change = price_change,
-                    )
-                    subscription_to_edit.monthly_rate = Decimal(request.POST['monthly_rate'])
-
-
-
-                st_date = request.POST['start_date']
-                sub_duration = request.POST['duration']
-
-                # figure out time displacement
-                # options ("Bi-annually", "Yearly", "Monthly", "Lifetime")
-                if sub_duration == "Bi-annually":
-                    time_change = 2
-                elif sub_duration == "Yearly":
-                    time_change = 1
-                # elif sub_duration == "Monthly":
-                    # figure out time shift in days given the month
-                # elif sub_duration == "Lifetime":
-
-                s_date = st_date.split("-")
-
-                if sub_duration == "Bi-annually" or sub_duration == "Yearly":
-                    add_time = int(s_date[0])+time_change
-                    s_date[0] = str(add_time)
-                    renew_date = "-".join(s_date)
-                    date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')    
-                # elif sub_duration == "Monthly":
-                #     add_time = int(s_date[1])+time_change
-                #     # Need Logic to handle month spillover
-                #     s_date[1] = str(add_time)
-                #     renew_date = "-".join(s_date)
-                #     date_plus_time = datetime.datetime.strptime(renew_date, '%Y-%m-%d')
-                # else:
-                #     date_plus_time = None
-
-
-
-                subscription_to_edit.start_date = st_date
-                subscription_to_edit.duration = sub_duration
-                subscription_to_edit.renew_by_date = date_plus_time
-
-
-
-                subscription_to_edit.save()
+                    subscription_to_edit.save()
         return redirect(f"/edit_subscription/{ subscription_id }")            
     return redirect("/")
-
 
 
 def delete_subscription(request):
@@ -427,7 +392,5 @@ def renew_subscription(request, subscription_id):
                 subscription_to_renew.save()
         return redirect(f"/edit_subscription/{ subscription_id }")            
     return redirect("/")
-
-
 
 

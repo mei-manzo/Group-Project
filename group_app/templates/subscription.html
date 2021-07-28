@@ -52,18 +52,56 @@
         <table class="table table-dark">
             <thead>
                 <th><a href=""></a></th>
-                <th><a href="/subscriptions/cn/1">Company</a></th>
-                <th><a href="/subscriptions/ac/1">Account</a></th>
-                <th><a href="/subscriptions/st/1">Type</a></th>
-                <th><a href="/subscriptions/mr/1">Monthly Rate</a></th>
-                <th><a href="/subscriptions/sd/1">Start Date</a><th>                
+                <!-- <th><a href="/subscriptions/_cn/1">Company</a></th> -->
+                <th>
+                    Company
+                    <a href="/subscriptions/cn/1">&#9650;</a>
+                    <a href="/subscriptions/_cn/1">&#9660;</a>
+                </th>
+
+                <!-- <th><a href="/subscriptions/ac/1">Account</a></th> -->
+                <th>
+                    Account
+                    <a href="/subscriptions/ac/1">&#9650;</a>
+                    <a href="/subscriptions/_ac/1">&#9660;</a>
+                </th>
+                
+                
+                <!-- <th><a href="/subscriptions/st/1">Type</a></th> -->
+                <th>
+                    Type
+                    <a href="/subscriptions/st/1">&#9650;</a>
+                    <a href="/subscriptions/_st/1">&#9660;</a>
+                </th>
+
+
+                <!-- <th><a href="/subscriptions/mr/1">Monthly Rate</a></th> -->
+                <th>
+                    Monthly Rate
+                    <a href="/subscriptions/mr/1">&#9650;</a>
+                    <a href="/subscriptions/_mr/1">&#9660;</a>
+                </th>
+
+
+                <!-- <th><a href="/subscriptions/sd/1">Start Date</a><th>                 -->
+                <th>
+                    Start Date
+                    <a href="/subscriptions/sd/1">&#9650;</a>
+                    <a href="/subscriptions/_sd/1">&#9660;</a>
+                </th>
+            
+            
+            
+            
             </thead>
             <tbody>
                 {% for subscription in my_subscriptions %}
                 <tr>
-                    <!-- <td>{{ subscription.company }}</td> -->
                     <td><img src= {% static subscription.company.image_src %} alt={{subscription.company.image_alt}} style="width:100px;height:80px;" ></img></td>
-                    <td>{{ subscription.company.company_name }}</td>
+                    <td>
+                        <!-- <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;"> -->
+                        {{ subscription.company.company_name }}
+                    </td>
                     <td>{{ subscription.account }}</td>
                     <td>{{ subscription.level }}</td>
                     <td>{{ subscription.monthly_rate }}</td>
@@ -71,7 +109,6 @@
                     <td><a href="/edit_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Edit</a></td>
                 </tr>
                 {% endfor %}
-
             </tbody>
         </table>
     </div>
@@ -81,24 +118,19 @@
         <table class="table table-dark">
             <thead>
                 <th>Company:</th>
-                <th>Image:</th>
-                <th>Actions:<th>
-                
-                
+                <th>Renew By:</th>
+                <th>Actions:</th>                
             </thead>
             <tbody>
-                {% for subscription in my_subscriptions %}
-                    
-
-                    {% for key, value in photo_company.items %}
-                        {% if subscription.company == key %}
-                    <tr>
-                        <td>{{ key }}</td>
-                        <td><img src="{% static 'img/'|add:company.img_src %}" alt="{{ company.img_alt }}"></td>
-                        <td><a href="/renew_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Renew</a></td>
-                    </tr>
-                        {% endif %}
-                    {% endfor %}
+                {% for subscription in near_due_subscriptions %}
+                        <tr>
+                            <td>
+                                <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
+                                {{ subscription.company.company_name }}
+                            </td>
+                            <td>{{ subscription.renew_by_date }}</td>
+                            <td><a href="/renew_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Renew</a></td>
+                        </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -123,14 +155,6 @@
             {% endif %}
         </div>      <!--page_nav-->
     </div>
-
-
-
-
-
-
-
-
 
 </body>
 </html>
