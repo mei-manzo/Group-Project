@@ -3,9 +3,13 @@ from django.contrib import messages
 import bcrypt
 from .models import *
 from datetime import datetime
+from datetime import date
 from django.core.paginator import Paginator
-from django.db.models.fields import NullBooleanField
-from decimal import Decimal
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+
+
 
 url_company ={
     'Netflix': 'https://www.netflix.com/',
@@ -95,7 +99,40 @@ def subscriptions(request, order_by, page_num):
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
+    
+def get_graph():
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    buffer.close()
+    return graph
 
+def get_plot(companies):
+    # plt.switch_backend('AGG')
+    # plt.figure(figsize=(10,5))
+    # plt.title('subscription analysis')
+    # plt.plot(x,y)
+    # plt.xticks(rotaion=45)
+    # plt.xlabel('date')
+    # plt.ylabel('price')
+    # plt.tight_layout()
+    list_graph =[]
+    for company_name in companies:
+        company_date_price = companies[company_name]
+        x = company_date_price.keys()
+        y = company_date_price.values()
+        plt.switch_backend('AGG')
+        plt.figure(figsize=(10,5))
+        plt.title(company_name)
+        plt.plot(x,y)
+        plt.xlabel('Dates')
+        plt.ylabel('Prices')
+        graph=get_graph()
+        list_graph.append(graph)
+    return(list_graph)
 
 def stats(request):
     if 'user_id' in request.session:
@@ -107,25 +144,29 @@ def stats(request):
                 'user' : logged_user,
             }
             return render(request, 'stats.html', context) 
-        data_list=[]
-        for subcription in all_subscriptions:
-            datas = DataPoint.objects.filter(subscription= subcription).all()
-            data_list.append(datas)
+        
+        companies={}
+        for subscription in all_subscriptions:
+            company_name = subscription.company.company_name
+            company_date_price = {}
+
+            
+            data_points = DataPoint.objects.filter(subscription= subscription).all()
+
+            for data in data_points:
+                date = data.created_at.date()
+                price = float(data.monthly_rate)
+                company_date_price[date] = price
+            companies[company_name] = company_date_price
+        
+        list_graph = get_plot(companies)
         context = {
             'all_subscriptions_count': len(all_subscriptions),
             'user' : logged_user,
-            'my_datas' : datas,
-            'data_list' : data_list
+            'list_graph':list_graph
         }
         return render(request, 'stats.html', context)    
     return redirect('/')
-
-
-
-
-
-
-
 
 
 def user_account(request):
@@ -212,7 +253,6 @@ def process_add_subscription(request):
             #     date_plus_time = None
 
             # gets or creates company to be subscribed to 
-            #need to determine if company name not in db
             # if request.POST['company_id'] == "-1":
             if request.POST['company_name'] not in default_companies:
                 this_company = Company.objects.create(
