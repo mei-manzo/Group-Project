@@ -12,17 +12,17 @@ import numpy as np
 
 
 
-url_company ={
-    'Netflix': 'https://www.netflix.com/',
-    'Amazon':'https://www.amazon.com/gp/video/offers/ref=dvm_us_dl_sl_go_brsa_mkw_svHxbIxqC-dc_pcrid_448130500925?ie=UTF8&gclid=EAIaIQobChMI8ou9zLX88QIVNQytBh2E7wIjEAAYASAAEgK2cvD_BwE&mrntrk=slid__pgrid_29008589832_pgeo_9033288_x__ptid_kwd-45697133742',
-    'Hulu' : 'https://www.hulu.com/welcome'
+# url_company ={
+#     'Netflix': 'https://www.netflix.com/',
+#     'Amazon':'https://www.amazon.com/gp/video/offers/ref=dvm_us_dl_sl_go_brsa_mkw_svHxbIxqC-dc_pcrid_448130500925?ie=UTF8&gclid=EAIaIQobChMI8ou9zLX88QIVNQytBh2E7wIjEAAYASAAEgK2cvD_BwE&mrntrk=slid__pgrid_29008589832_pgeo_9033288_x__ptid_kwd-45697133742',
+#     'Hulu' : 'https://www.hulu.com/welcome'
+# }
 
-}
-photo_company ={
-    'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
-    'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
-    'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
-}
+# photo_company ={
+#     'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
+#     'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
+#     'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
+# }
 
 # default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
 
@@ -72,7 +72,7 @@ def subscriptions(request, order_by, page_num):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         
-        # order by selected column
+        # order_by selected column
         if order_by == "cn":
             order_by_field = "company__company_name" 
         elif order_by == "ac":
@@ -97,8 +97,7 @@ def subscriptions(request, order_by, page_num):
             'num_of_pages': num_of_pages,
             'order_by': order_by,
             'near_due_subscriptions': Subscription.objects.filter(user=logged_user).order_by("renew_by_date")[:6],
-            'photo_company': photo_company
-            
+            # 'photo_company': photo_company            
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
@@ -383,7 +382,5 @@ def renew_subscription(request, subscription_id):
                 subscription_to_renew.save()
         return redirect(f"/edit_subscription/{ subscription_id }")            
     return redirect("/")
-
-
 
 

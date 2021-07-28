@@ -46,7 +46,7 @@
             {% endif %}
         </div>      <!--end errors-->
 
-            <h1>Edit Subscription:</h1>   
+        <h1>Edit Subscription:</h1>   
 
         <form action="/process_edit_subscription/{{ subscription_to_edit.id }}" method="POST">
             {% csrf_token %}

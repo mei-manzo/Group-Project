@@ -61,13 +61,11 @@
             <tbody>
                 {% for subscription in my_subscriptions %}
                 <tr>
-                    <!-- <td>{{ subscription.company }}</td> -->
                     <td><img src= {% static subscription.company.image_src %} alt={{subscription.company.image_alt}} style="width:100px;height:80px;" ></img></td>
                     <td>
                         <!-- <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;"> -->
                         {{ subscription.company.company_name }}
                     </td>
-
                     <td>{{ subscription.account }}</td>
                     <td>{{ subscription.level }}</td>
                     <td>{{ subscription.monthly_rate }}</td>
@@ -75,7 +73,6 @@
                     <td><a href="/edit_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Edit</a></td>
                 </tr>
                 {% endfor %}
-
             </tbody>
         </table>
     </div>
@@ -85,16 +82,12 @@
         <table class="table table-dark">
             <thead>
                 <th>Company:</th>
-                <!-- <th>Image:</th> -->
                 <th>Renew By:</th>
-                <th>Actions:</th>
-                
-                
+                <th>Actions:</th>                
             </thead>
             <tbody>
                 {% for subscription in near_due_subscriptions %}
                         <tr>
-                            <!-- <td>{{ key }}</td> -->
                             <td>
                                 <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
                                 {{ subscription.company.company_name }}
