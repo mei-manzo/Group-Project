@@ -74,7 +74,7 @@ def subscriptions(request, order_by, page_num):
         
         # order by selected column
         if order_by == "cn":
-            order_by_field = "company"
+            order_by_field = "company__company_name" 
         elif order_by == "ac":
             order_by_field = "account"
         elif order_by == "st":

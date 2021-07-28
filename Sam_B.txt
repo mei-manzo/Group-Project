@@ -46,7 +46,7 @@
     -monthly_rate regex not comfirmed talk to Mei
     -ensure no duplicate subscription entry exists
 -errors handling for process_edit_subscription
-
+-company_name order_by corrected
 
 
 7/25/2021
