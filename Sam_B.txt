@@ -1,25 +1,15 @@
 --Notes--
--handle the logic for determining the number of days/month for time_change
- and handle the logic for month spillover (ie: subscription starts feb 27 
- and you need to add 30 days)
-    -let's try not to use monthly or lifetime until we have the logic in place
+-monthly_rate regex not comfirmed talk to Mei
+-confirm hidden input for add/edit_subscription integrated properly
 
-- is the due_date in Subscription model intended to be for billing?
+-I've got two delete_subscription buttons in my editSubscription.html
 
 -confirm password on registration is still not obscured
-
--if we decide to include the renew function we may need to expand it 
- such that we can allow for price changes at the time of renewal to 
- better accomodate the building of an accurate new datapoint and to update the 
- renew_by_date
 
 -Please note that the mainstream companies we intend to have images 
  and stored information for must be managed via the admin panel
     -to show up in the companies drop-down they must be checked for 
      entered_by_admin
-
-
-
 
 -We have one more body column than header 
  column on our dashboard
@@ -33,9 +23,10 @@
 
 
 --To_Do--
--errors handling for add_subscription
-    -ensure no duplicate subscription entry exists
--errors handling for edit_subscription
+-if we decide to include the renew function we may need to expand it 
+ such that we can allow for price changes at the time of renewal to 
+ better accomodate the building of an accurate new datapoint and to update the 
+ renew_by_date
 
 
 
@@ -45,6 +36,15 @@
 
 
 --Completed--
+7/28/2021
+-added hidden input to add_subscription and edit_subscription form
+-errors handling for process_add_subscription
+    -monthly_rate regex not comfirmed talk to Mei
+    -ensure no duplicate subscription entry exists
+-errors handling for process_edit_subscription
+
+
+
 7/25/2021
 -added date logic for renewal date for "Yearly" and "Bi-annually"
  subscriptions add_subscription
