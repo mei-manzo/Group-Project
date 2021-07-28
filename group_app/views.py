@@ -359,7 +359,6 @@ def process_edit_subscription(request, subscription_id):
     return redirect("/")
 
 
-
 def delete_subscription(request):
     if 'user_id' in request.session:
         if request.method == "POST":
