@@ -15,8 +15,8 @@ url_company ={
 }
 photo_company ={
     'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
-    'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
-    'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
+    'Amazon' : 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
+    'Hulu' : 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
 }
 
 default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']

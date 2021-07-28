@@ -69,15 +69,11 @@
                 <th>Company:</th>
                 <th>Image:</th>
                 <th>Actions:<th>
-                
-                
             </thead>
             <tbody>
                 {% for subscription in my_subscriptions %}
-                    
-
                     {% for key, value in photo_company.items %}
-                        {% if subscription.company == key %}
+                        {% if subscription.company_subscriptions.company_name == key %}
                     <tr>
                         <td>{{ key }}</td>
                         <td><img src= {{value}} alt="company logo" style="width:100px;height:80px;" ></img></td>
