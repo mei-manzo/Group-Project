@@ -211,7 +211,7 @@ def process_add_subscription(request):
     if 'user_id' in request.session:
         if request.method == "POST":
             # errors handling
-            errors = Subscription.objects.subscription_validator(request.POST)
+            errors = Subscription.objects.add_subscription_validator(request.POST)
             if len(errors) > 0:
                 for error in errors.values():
                     messages.error(request, error)
@@ -286,7 +286,7 @@ def process_edit_subscription(request, subscription_id):
     if 'user_id' in request.session:
         if request.method == "POST":
             # errors handling
-            errors = Subscription.objects.subscription_validator(request.POST)
+            errors = Subscription.objects.edit_subscription_validator(request.POST)
             if len(errors) > 0:
                 for error in errors.values():
                     messages.error(request, error)

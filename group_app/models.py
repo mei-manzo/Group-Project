@@ -62,7 +62,7 @@ class UserManager(models.Manager):
 
 
 class SubscriptionManager(models.Manager): #validates subscription data
-    def subscription_validator(self, postData):
+    def add_subscription_validator(self, postData):
         errors = {}
         
         if len(postData['account']) <2:
@@ -108,8 +108,29 @@ class SubscriptionManager(models.Manager): #validates subscription data
         if len(postData['account']) <2:
             errors["account"] = "Subscription account should be at least 2 characters."
 
-        logged_user = User.objects.get(id=postData['user_id'])
-        user_subscriptions = Subscription.objects.filter(user=logged_user)
+        if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
+            errors["company"] = "Please do not select a company from the dropdown and enter a your own."
+        elif postData['company_id'] == "-1" and len(postData['company_name']) < 1:
+            errors["company"] = "Please either select a company from the dropdown or enter a your own."
+        else:
+            if postData['company_id'] == "-1":
+                if len(postData['company_name']) < 2:
+                    errors["company"] = "A company name should be longer than 2 characters."
+                admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
+                if admin_company_exists:
+                    errors["company"] = "Company Already Exists Please Select From Dropdown"                
+
+        if len(postData['level']) <2:
+            errors["level"] = "Subscription level should be at least 2 characters."
+        if len(postData['monthly_rate']) < 1:
+            errors["monthly_rate"] = "Must enter a monthly rate"
+        if not MONEY_REGEX.match(postData['monthly_rate']):             
+            errors['monthly_rate'] = "Invalid monetary value!"
+        if len(postData['start_date']) < 1:
+            errors["start_date"] = "Please select a valid start date." 
+        if postData['duration'] == "-1":
+            errors["duration"] = "Please select a duration."
+        return errors
 
 
 

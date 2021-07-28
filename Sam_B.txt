@@ -2,6 +2,10 @@
 -monthly_rate regex not comfirmed talk to Mei
 -confirm hidden input for add/edit_subscription integrated properly
 
+-What changes are we going to allow at renewal?
+    -do we wish to make it's own confirmation page?
+
+
 -I've got two delete_subscription buttons in my editSubscription.html
 
 -confirm password on registration is still not obscured
