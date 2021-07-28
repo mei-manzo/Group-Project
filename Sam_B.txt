@@ -55,6 +55,7 @@
 -company_name order_by corrected
 -corrected process_edit_subscription to handle account attribute
 -added further validations to process_edit_subscription
+-updated subscriptions to correct renewal chart for model updates
 
 
 7/25/2021

@@ -91,12 +91,12 @@ def subscriptions(request, order_by, page_num):
         page = p.page(page_num)
         num_of_pages = "a" * p.num_pages
         
-        
         context = {
             'user': logged_user,
             'my_subscriptions': page,
             'num_of_pages': num_of_pages,
             'order_by': order_by,
+            'near_due_subscriptions': Subscription.objects.filter(user=logged_user).order_by("renew_by_date")[:6],
             'photo_company': photo_company
             
         }

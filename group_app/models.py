@@ -130,7 +130,6 @@ class SubscriptionManager(models.Manager): #validates subscription data
                 if subscription_exists:
                     errors["company"] = "You have already entered this account previously"
 
-
         if len(postData['level']) <2:
             errors["level"] = "Subscription level should be at least 2 characters."
         if len(postData['monthly_rate']) < 1:
@@ -142,9 +141,6 @@ class SubscriptionManager(models.Manager): #validates subscription data
         if postData['duration'] == "-1":
             errors["duration"] = "Please select a duration."
         return errors
-
-
-
 
 
 class User(models.Model):
@@ -167,6 +163,7 @@ class Company(models.Model): #one-to-many with photos, subscriptions
     image_alt = models.CharField(default="no image available",max_length=255, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
+
 
 class Subscription(models.Model): #company's / user's subscriptions
     user = models.ForeignKey(
