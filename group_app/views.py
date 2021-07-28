@@ -22,6 +22,9 @@ photo_company ={
     'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
     'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
 }
+
+default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
+
 def index(request):
     return render(request, "index.html")
 
@@ -250,7 +253,8 @@ def process_add_subscription(request):
             #     date_plus_time = None
 
             # gets or creates company to be subscribed to 
-            if request.POST['company_id'] == "-1":
+            # if request.POST['company_id'] == "-1":
+            if request.POST['company_name'] not in default_companies:
                 this_company = Company.objects.create(
                     company_name = request.POST['company_name']
                 )
