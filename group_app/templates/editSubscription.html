@@ -134,9 +134,9 @@
 
 
 
-        <form action="/delete_subscription" method="POST">
+        <form action="/delete_subscription/{{ subscription_to_edit.id }}" method="POST">
             {% csrf_token %}
-            <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
+            {% comment %} <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}"> {% endcomment %}
             <button type="submit" class="btn btn-danger">Delete</button>
         </form>
     
