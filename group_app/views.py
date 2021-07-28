@@ -369,16 +369,16 @@ def process_edit_subscription(request, subscription_id):
     return redirect("/")
 
 
-def delete_subscription(request):
+def delete_subscription(request, subscription_id):
     if 'user_id' in request.session:
-        if request.method == "POST":
+        # if request.method == "POST":
             logged_user = User.objects.get(id=request.session['user_id'])
-            subscription_to_delete = Subscription.objects.get(id=request.POST['subscription_id'])
+            subscription_to_delete = Subscription.objects.get(id=subscription_id)
             if subscription_to_delete.user == logged_user:     
                 subscription_to_delete.delete()
                 messages.error(request, "Subscription Successfully Deleted!")
                 return redirect("/subscriptions/sd/1")
-        return redirect("/subscriptions/sd/1")
+        # return redirect("/subscriptions/sd/1")
     return redirect("/")
 
 
