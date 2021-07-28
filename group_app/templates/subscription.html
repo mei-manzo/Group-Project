@@ -37,20 +37,34 @@
         </div>
     </nav>
     <div class="container">
+
+        <div id="errors">
+            {% if messages %}
+            <ul>    
+                {% for message in messages %}    
+                    <li>{{ message }}</li>    
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>      <!--end errors-->
+
         <h1>Your Subscription List:</h1>
         <table class="table table-dark">
             <thead>
-                <th><a href="/subscriptions/cn/1">Company:</a></th>
-                <th><a href="/subscriptions/st/1">Type of Subscription:</a></th>
-                <th><a href="/subscriptions/mr/1">Monthly Rate</a><th>
-                <th><a href="/subscriptions/sd/1">Start Date:</a></th>
-                
+                <th><a href=""></a></th>
+                <th><a href="/subscriptions/cn/1">Company</a></th>
+                <th><a href="/subscriptions/ac/1">Account</a></th>
+                <th><a href="/subscriptions/st/1">Type</a></th>
+                <th><a href="/subscriptions/mr/1">Monthly Rate</a></th>
+                <th><a href="/subscriptions/sd/1">Start Date</a><th>                
             </thead>
             <tbody>
                 {% for subscription in my_subscriptions %}
                 <tr>
                     <!-- <td>{{ subscription.company }}</td> -->
+                    <td><img src= {% static subscription.company.image_src %} alt={{subscription.company.image_alt}} style="width:100px;height:80px;" ></img></td>
                     <td>{{ subscription.company.company_name }}</td>
+                    <td>{{ subscription.account }}</td>
                     <td>{{ subscription.level }}</td>
                     <td>{{ subscription.monthly_rate }}</td>
                     <td>{{ subscription.start_date }}</td>
@@ -86,24 +100,26 @@
         </table>
     </div>
     
+    <div class="container">
+        <div id="page_nav">
+            {% if my_subscriptions.has_previous %}
+                <button>
+                    <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.previous_page_number }}">&laquo;</a>
+                </button>
+            {% endif %}
+            {% for i in num_of_pages %}
+                <button>
+                    <a href="/subscriptions/{{ order_by }}/{{ forloop.counter }}">{{ forloop.counter }}</a>
+                </button>
+            {% endfor %}
+            {% if my_subscriptions.has_next %}
+                <button>
+                    <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.next_page_number }}">&raquo;</a>
+                </button>
+            {% endif %}
+        </div>      <!--page_nav-->
+    </div>
 
-    <div id="page_nav">
-        {% if my_subscriptions.has_previous %}
-            <button>
-                <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.previous_page_number }}">&laquo;</a>
-            </button>
-        {% endif %}
-        {% for i in num_of_pages %}
-            <button>
-                <a href="/subscriptions/{{ order_by }}/{{ forloop.counter }}">{{ forloop.counter }}</a>
-            </button>
-        {% endfor %}
-        {% if my_subscriptions.has_next %}
-            <button>
-                <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.next_page_number }}">&raquo;</a>
-            </button>
-        {% endif %}
-    </div>      <!--page_nav-->
 
 
 
