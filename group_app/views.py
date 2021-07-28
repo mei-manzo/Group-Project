@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
+import numpy as np
 
 
 
@@ -111,14 +112,6 @@ def get_graph():
     return graph
 
 def get_plot(companies):
-    # plt.switch_backend('AGG')
-    # plt.figure(figsize=(10,5))
-    # plt.title('subscription analysis')
-    # plt.plot(x,y)
-    # plt.xticks(rotaion=45)
-    # plt.xlabel('date')
-    # plt.ylabel('price')
-    # plt.tight_layout()
     list_graph =[]
     for company_name in companies:
         company_date_price = companies[company_name]
@@ -127,7 +120,7 @@ def get_plot(companies):
         plt.switch_backend('AGG')
         plt.figure(figsize=(10,5))
         plt.title(company_name)
-        plt.plot(x,y)
+        plt.plot(x,y,marker ='o',mfc='red',linestyle ='--')
         plt.xlabel('Dates')
         plt.ylabel('Prices')
         graph=get_graph()
