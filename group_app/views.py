@@ -207,7 +207,7 @@ def process_edit_user(request):
 def add_subscription(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
-        all_companies = Company.objects.filter(entered_by_admin=True)
+        all_companies = Company.objects.filter(entered_by_admin=True).order_by("company_name")
         context = {
             'logged_user': logged_user,
             'all_companies': all_companies,
@@ -280,7 +280,7 @@ def edit_subscription(request, subscription_id):
         logged_user = User.objects.get(id=request.session['user_id'])
         subscription_to_edit = Subscription.objects.get(id=subscription_id)
         if subscription_to_edit.user == logged_user:  
-            all_companies = Company.objects.filter(entered_by_admin=True)   
+            all_companies = Company.objects.filter(entered_by_admin=True).order_by("company_name")   
             context = {
                 'logged_user': logged_user,
                 'subscription_to_edit': subscription_to_edit,
