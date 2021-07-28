@@ -63,7 +63,11 @@
                 <tr>
                     <!-- <td>{{ subscription.company }}</td> -->
                     <td><img src= {% static subscription.company.image_src %} alt={{subscription.company.image_alt}} style="width:100px;height:80px;" ></img></td>
-                    <td>{{ subscription.company.company_name }}</td>
+                    <td>
+                        <!-- <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;"> -->
+                        {{ subscription.company.company_name }}
+                    </td>
+
                     <td>{{ subscription.account }}</td>
                     <td>{{ subscription.level }}</td>
                     <td>{{ subscription.monthly_rate }}</td>
@@ -123,14 +127,6 @@
             {% endif %}
         </div>      <!--page_nav-->
     </div>
-
-
-
-
-
-
-
-
 
 </body>
 </html>

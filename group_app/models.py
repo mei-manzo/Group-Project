@@ -108,6 +108,8 @@ class SubscriptionManager(models.Manager): #validates subscription data
         if len(postData['account']) <2:
             errors["account"] = "Subscription account should be at least 2 characters."
 
+
+        logged_user = User.objects.get(id=postData['user_id'])
         if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
             errors["company"] = "Please do not select a company from the dropdown and enter a your own."
         elif postData['company_id'] == "-1" and len(postData['company_name']) < 1:
@@ -118,7 +120,16 @@ class SubscriptionManager(models.Manager): #validates subscription data
                     errors["company"] = "A company name should be longer than 2 characters."
                 admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
                 if admin_company_exists:
-                    errors["company"] = "Company Already Exists Please Select From Dropdown"                
+                    errors["company"] = "Company Already Exists Please Select From Dropdown" 
+                subscription_exists = Subscription.objects.filter(user=logged_user).filter(company__company_name=postData['company_name']).filter(account=postData['account']).exclude(id=postData['subscription_id'])
+                if subscription_exists:
+                    errors["company"] = "You have already entered this account previously"
+            else:
+                company_to_check = Company.objects.get(id=postData['company_id'])
+                subscription_exists = Subscription.objects.filter(user=logged_user).filter(company=company_to_check).filter(account=postData['account']).exclude(id=postData['subscription_id'])
+                if subscription_exists:
+                    errors["company"] = "You have already entered this account previously"
+
 
         if len(postData['level']) <2:
             errors["level"] = "Subscription level should be at least 2 characters."

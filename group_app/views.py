@@ -24,7 +24,7 @@ photo_company ={
     'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
 }
 
-default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
+# default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
 
 def index(request):
     return render(request, "index.html")
@@ -350,6 +350,7 @@ def process_edit_subscription(request, subscription_id):
                         renew_date = "-".join(s_date)
                         date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')    
 
+                    subscription_to_edit.account = request.POST['account']
                     subscription_to_edit.start_date = st_date
                     subscription_to_edit.duration = sub_duration
                     subscription_to_edit.renew_by_date = date_plus_time

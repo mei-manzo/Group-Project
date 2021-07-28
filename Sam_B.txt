@@ -2,6 +2,14 @@
 -monthly_rate regex not comfirmed talk to Mei
 -confirm hidden input for add/edit_subscription integrated properly
 
+-I test my img call just to make sure I wasn't sending Jason down
+ the wrong road with this. It works so I left it in place, just 
+ commented out
+    -can we move the company image into the same cell as the company name
+
+-can we move the pagination buttons to just below the subscriptions table
+
+
 -What changes are we going to allow at renewal?
     -do we wish to make it's own confirmation page?
 
@@ -12,11 +20,9 @@
 
 -Please note that the mainstream companies we intend to have images 
  and stored information for must be managed via the admin panel
-    -to show up in the companies drop-down they must be checked for 
+    -to show up in the companies drop-down they must be checked True for 
      entered_by_admin
 
--We have one more body column than header 
- column on our dashboard
 
 
 
@@ -47,6 +53,8 @@
     -ensure no duplicate subscription entry exists
 -errors handling for process_edit_subscription
 -company_name order_by corrected
+-corrected process_edit_subscription to handle account attribute
+-added further validations to process_edit_subscription
 
 
 7/25/2021
@@ -96,7 +104,6 @@
 -capitalize duration values in forms and for existing 
  accounts in db
 -added enough memberships to user b to allow for three pages of subscriptions/paginated
-
 
 
 7/21/2021
