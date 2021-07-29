@@ -147,6 +147,7 @@ def stats(request):
                 date = data.created_at.date()
                 price = float(data.monthly_rate)
                 company_date_price[date] = price
+                # print(date, price)
             companies[company_name] = company_date_price
         
         list_graph = get_plot(companies)
@@ -234,7 +235,7 @@ def process_add_subscription(request):
                 # gets or creates company to be subscribed to 
                 if request.POST['company_id'] == "-1":
                     this_company = Company.objects.create(
-                        company_name = request.POST['company_name']
+                        company_name = (request.POST['company_name']).capitalize()
                     )
                 else:
                     this_company = Company.objects.get(id= request.POST['company_id'])
