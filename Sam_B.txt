@@ -60,6 +60,9 @@ Should be button to refresh
 -housekeeping
 -deleted extra image files
 -added further order_by functionality to subscriptions table
+-fixed Sam's club img_src url
+
+
 
 7/25/2021
 -added date logic for renewal date for "Yearly" and "Bi-annually"

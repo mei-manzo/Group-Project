@@ -77,9 +77,9 @@ class SubscriptionManager(models.Manager): #validates subscription data
             if postData['company_id'] == "-1":
                 if len(postData['company_name']) < 2:
                     errors["company"] = "A company name should be longer than 2 characters."
-                if (postData['company_name']).capitalize() in Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True):
-                    errors["company"] = "Company already exists. Please select from dropdown menu."
-                admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
+                # if (postData['company_name']).capitalize() in Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True):
+                #     errors["company"] = "Company already exists. Please select from dropdown menu."
+                admin_company_exists = Company.objects.filter(company_name=postData['company_name'].capitalize()).filter(entered_by_admin=True)
                 if admin_company_exists:
                     errors["company"] = "Company Already Exists Please Select From Dropdown"                
                 for subscription in user_subscriptions:
@@ -129,7 +129,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
             if postData['company_id'] == "-1":
                 if len(postData['company_name']) < 2:
                     errors["company"] = "A company name should be longer than 2 characters."
-                admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
+                admin_company_exists = Company.objects.filter(company_name=postData['company_name'].capitalize()).filter(entered_by_admin=True)
                 if admin_company_exists:
                     errors["company"] = "Company Already Exists Please Select From Dropdown" 
                 subscription_exists = Subscription.objects.filter(user=logged_user).filter(company__company_name=postData['company_name']).filter(account=postData['account']).exclude(id=postData['subscription_id'])
@@ -216,6 +216,7 @@ class DataPoint(models.Model):  #connect to subscription (can show one, or all)
     )
     monthly_rate = models.DecimalField(decimal_places=2, max_digits=9)
     price_change = models.DecimalField(default = 0.00, decimal_places=2, max_digits=9)
+    placed_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
