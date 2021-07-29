@@ -20,5 +20,6 @@ urlpatterns = [
     path('edit_subscription/<int:subscription_id>', views.edit_subscription),
     path('process_edit_subscription/<int:subscription_id>', views.process_edit_subscription),
     path('delete_subscription/<int:subscription_id>', views.delete_subscription),
-    path('renew_subscription/<int:subscription_id>', views.renew_subscription),
+    path('renew_subscription/<int:subscription_id>', views.renew_subscription), 
+    path('process_renew_subscription', views.process_renew_subscription)
 ]
