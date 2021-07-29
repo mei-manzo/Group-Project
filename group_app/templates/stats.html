@@ -34,20 +34,24 @@
         </div>
     </nav>
     <div class="container">
-        <p>Total subscriptions that you already had: {{all_subscriptions_count}}</p>
+        <p style="margin-left: 410px;">Total subscriptions that you already had: {{all_subscriptions_count}}</p>
         <form action="/select_sub_to_view" method="POST">
             {% csrf_token %}
-            <p>display company</p>
-            <select name="subscription_id">
+            <h5 style="margin-left: 480px;">Display company:</h5>
+            <select name="subscription_id" style="margin-left: 425px;">
                 {% for subscription in all_subscriptions %}
                 <option value="{{ subscription.id }}">{{ subscription.company.company_name }}</option>
                 {% endfor %}
             </select>
     </div>
-    <button type="submit">Display</button>
+    <br><br>
+    <div>
+        <button type="submit" style="margin-left: 725px;" class='btn btn-primary'>Display</button>
+    </div>
     </form>
+    <br>
     {% for graph in list_graph %}
-    <img src="data:image/png;base64, {{graph|safe}}">
+    <img src="data:image/png;base64, {{graph|safe}}" style="margin-left: 250px;">
     {% endfor %}
     </div>
 </body>
