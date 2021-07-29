@@ -26,6 +26,11 @@ Should be button to refresh
 
 
 
+
+
+
+
+
 --Completed--
 7/29/2021
 -Update monthly_rate to PRICE_REGEX
