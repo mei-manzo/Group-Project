@@ -249,7 +249,7 @@ def process_add_subscription(request):
                 # gets or creates company to be subscribed to 
                 if request.POST['company_id'] == "-1":
                     this_company = Company.objects.create(
-                        company_name = request.POST['company_name']
+                        company_name = (request.POST['company_name']).capitalize()
                     )
                 else:
                     this_company = Company.objects.get(id= request.POST['company_id'])
