@@ -116,6 +116,8 @@ class SubscriptionManager(models.Manager): #validates subscription data
             if postData['company_id'] == "-1":
                 if len(postData['company_name']) < 2:
                     errors["company"] = "A company name should be longer than 2 characters."
+                if (postData['company_name']).capitalize() in Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True):
+                    errors["company"] = "Company already exists. Please select from dropdown menu."
                 admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
                 if admin_company_exists:
                     errors["company"] = "Company Already Exists Please Select From Dropdown" 
