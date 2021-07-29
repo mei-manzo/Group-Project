@@ -107,8 +107,13 @@
                     <td>{{ subscription.monthly_rate }}</td>
                     <td>{{ subscription.start_date }}</td>
                     <td>{{ subscription.renew_by_date }}</td>
-                    <td><a href="/edit_subscription/{{ subscription.id }}" role="button"
-                            class="btn btn-sm btn-info ml-2 text-white">Edit</a></td>
+                    <td>
+                        <a href="/edit_subscription/{{ subscription.id }}" 
+                            role="button"
+                            class="btn btn-sm btn-info ml-2 text-white">
+                            Edit
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
