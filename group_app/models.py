@@ -2,13 +2,12 @@ from django.db import models
 import re
 import bcrypt
 from decimal import Decimal
+from datetime import datetime
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-MONEY_REGEX = re.compile('|'.join([
-    r'^\$?(\d*(\.\d\d?)?|\d+)$',
-    ]))
+PRICE_REGEX = re.compile(r'^[0-9]+\.[0-9]+$')
 
 
 class UserManager(models.Manager):
@@ -31,7 +30,6 @@ class UserManager(models.Manager):
         
     def login_validator(self, postData):
         errors = {}
-        # email = postData['email']
         existing_user = User.objects.filter(email=postData['email'])
         if len(postData['email']) == 0:
             errors['email'] = "Must enter an email"
@@ -61,25 +59,85 @@ class UserManager(models.Manager):
 
 
 class SubscriptionManager(models.Manager): #validates subscription data
-    def basic_validator(self, postData):
+    def add_subscription_validator(self, postData):
         errors = {}
+        
+        if len(postData['account']) <2:
+            errors["account"] = "Subscription account should be at least 2 characters."
 
-        # if len(postData['company']) <2:
-        #     errors["company"]="Company should be at least 2 characters."
+        logged_user = User.objects.get(id=postData['user_id'])
+        user_subscriptions = Subscription.objects.filter(user=logged_user)
+        if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
+            errors["company"] = "Please do not select a company from the dropdown and enter a your own."
+        elif postData['company_id'] == "-1" and len(postData['company_name']) < 1:
+            errors["company"] = "Please either select a company from the dropdown or enter a your own."
+        else:
+            if postData['company_id'] == "-1":
+                if len(postData['company_name']) < 2:
+                    errors["company"] = "A company name should be longer than 2 characters."
+                admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
+                if admin_company_exists:
+                    errors["company"] = "Company Already Exists Please Select From Dropdown"                
+                for subscription in user_subscriptions:
+                    if subscription.company.company_name == postData['company_name'] and subscription.account == postData['account']:
+                        errors["company"] = "You have already entered this account"
+            else:
+                company_to_check = Company.objects.get(id=postData['company_id'])
+                for subscription in user_subscriptions:
+                    if subscription.company == company_to_check and subscription.account == postData['account']:
+                        errors["company"] = "You have already entered this account"
+
         if len(postData['level']) <2:
-            errors["level"]="Subscription level should be at least 2 characters."
+            errors["level"] = "Subscription level should be at least 2 characters."
         if len(postData['monthly_rate']) < 1:
-            errors["monthly_rate"]="Must enter a monthly rate"
-        if not MONEY_REGEX.match(postData['monthly_rate']):             
+            errors["monthly_rate"] = "Must enter a monthly rate"
+        if not PRICE_REGEX.match(postData['monthly_rate']):             
             errors['monthly_rate'] = "Invalid monetary value!"
         if len(postData['start_date']) < 1:
-            errors["start_date"]="Must select a start date."
-        if len(postData['duration']) < 1:
-            errors["duration"]="Must select a duration."
-        if len(postData['start_date']) < 1:
-            errors["start_date"]="Must select a valid start date." 
+            errors["start_date"] = "Please select a valid start date." 
+        if postData['duration'] == "-1":
+            errors["duration"] = "Please select a duration."
         return errors
+
+    def edit_subscription_validator(self, postData):
+        errors = {}
         
+        if len(postData['account']) <2:
+            errors["account"] = "Subscription account should be at least 2 characters."
+
+        logged_user = User.objects.get(id=postData['user_id'])
+        if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
+            errors["company"] = "Please do not select a company from the dropdown and enter a your own."
+        elif postData['company_id'] == "-1" and len(postData['company_name']) < 1:
+            errors["company"] = "Please either select a company from the dropdown or enter a your own."
+        else:
+            if postData['company_id'] == "-1":
+                if len(postData['company_name']) < 2:
+                    errors["company"] = "A company name should be longer than 2 characters."
+                admin_company_exists = Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True)
+                if admin_company_exists:
+                    errors["company"] = "Company Already Exists Please Select From Dropdown" 
+                subscription_exists = Subscription.objects.filter(user=logged_user).filter(company__company_name=postData['company_name']).filter(account=postData['account']).exclude(id=postData['subscription_id'])
+                if subscription_exists:
+                    errors["company"] = "You have already entered this account previously"
+            else:
+                company_to_check = Company.objects.get(id=postData['company_id'])
+                subscription_exists = Subscription.objects.filter(user=logged_user).filter(company=company_to_check).filter(account=postData['account']).exclude(id=postData['subscription_id'])
+                if subscription_exists:
+                    errors["company"] = "You have already entered this account previously"
+
+        if len(postData['level']) <2:
+            errors["level"] = "Subscription level should be at least 2 characters."
+        if len(postData['monthly_rate']) < 1:
+            errors["monthly_rate"] = "Must enter a monthly rate"
+        if not PRICE_REGEX.match(postData['monthly_rate']):             
+            errors['monthly_rate'] = "Invalid monetary value!"
+        if len(postData['start_date']) < 1:
+            errors["start_date"] = "Please select a valid start date." 
+        if postData['duration'] == "-1":
+            errors["duration"] = "Please select a duration."
+        return errors
+
 
 class User(models.Model):
     first_name = models.CharField(max_length=255)
@@ -102,6 +160,7 @@ class Company(models.Model): #one-to-many with photos, subscriptions
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
+
 class Subscription(models.Model): #company's / user's subscriptions
     user = models.ForeignKey(
         User, 
@@ -114,12 +173,10 @@ class Subscription(models.Model): #company's / user's subscriptions
         on_delete = models.CASCADE
     )
     account = models.CharField(max_length = 255) #for different accounts from same company
-    # company = models.CharField(max_length = 255)#hulu, amazon prime, etc
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
-    monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
+    monthly_rate = models.DecimalField(decimal_places=2, max_digits=9)
     start_date = models.DateField()#can be selected from a clickable calender to deal with formatting
     renew_by_date = models.DateField(null=True, blank=True)
-    # due_date = models.CharField(max_length = 10)#made charfield so that can designate just one day of month - the "9th" of every month etc.
     duration = models.CharField(max_length = 255) #can select from dropdown? auto-renew, 12-month, etc
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
