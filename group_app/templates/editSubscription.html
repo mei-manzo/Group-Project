@@ -107,11 +107,10 @@
         </form>
         <form action="/delete_subscription" method="POST">
             {% csrf_token %}
-            {% comment %} <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}"> {% endcomment %}
+            <input type="hidden" name="subscription_id" value="{{ subscription_to_edit.id }}">
             <button type="submit" class="btn btn-danger">Delete</button>
         </form>
     </div>
-
 </body>
 
 </html>
