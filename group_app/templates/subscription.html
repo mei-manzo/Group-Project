@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Subscriptions</title>
     {% load static %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css"
+        integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
 
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
+            <a href="/subscriptions/sd/1">
+                <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
+            </a>
+                style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
             <a class="navbar-brand" href="#">Hello, {{user.first_name}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,18 +27,15 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto"></ul>
                 <span class="navbar-text">
-                        <a href="/add_subscription" role="button"
-                        class="btn btn-sm btn-info ml-2 text-white">Add Subscription</a>
-                        <a href="/subscriptions/stats" role="button"
-                        class="btn btn-sm btn-info ml-2 text-white">Stats</a>
-                        <a href="/user_account" role="button"
-                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a>
-                        <a href="/logout" role="button"
-                        class="btn btn-sm btn-info ml-2 text-white">Logout</a>
+                    <a href="/add_subscription" role="button" class="btn btn-sm btn-info ml-2 text-white">Add
+                        Subscription</a>
+                    <a href="/subscriptions/stats" role="button" class="btn btn-sm btn-info ml-2 text-white">Stats</a>
+                    <a href="/user_account" role="button" class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a>
+                    <a href="/logout" role="button" class="btn btn-sm btn-info ml-2 text-white">Logout</a>
 
                 </span>
 
-                
+
             </div>
         </div>
     </nav>
@@ -40,121 +43,91 @@
 
         <div id="errors">
             {% if messages %}
-            <ul>    
-                {% for message in messages %}    
-                    <li>{{ message }}</li>    
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
                 {% endfor %}
             </ul>
             {% endif %}
-        </div>      <!--end errors-->
+        </div>
+        <!--end errors-->
 
         <h1>Your Subscription List:</h1>
         <table class="table table-dark">
             <thead>
-                <th><a href=""></a></th>
-                <!-- <th><a href="/subscriptions/_cn/1">Company</a></th> -->
                 <th>
                     Company
                     <a href="/subscriptions/cn/1">&#9650;</a>
                     <a href="/subscriptions/_cn/1">&#9660;</a>
                 </th>
-
-                <!-- <th><a href="/subscriptions/ac/1">Account</a></th> -->
                 <th>
                     Account
                     <a href="/subscriptions/ac/1">&#9650;</a>
                     <a href="/subscriptions/_ac/1">&#9660;</a>
                 </th>
-                
-                
-                <!-- <th><a href="/subscriptions/st/1">Type</a></th> -->
                 <th>
                     Type
                     <a href="/subscriptions/st/1">&#9650;</a>
                     <a href="/subscriptions/_st/1">&#9660;</a>
                 </th>
-
-
-                <!-- <th><a href="/subscriptions/mr/1">Monthly Rate</a></th> -->
                 <th>
                     Monthly Rate
                     <a href="/subscriptions/mr/1">&#9650;</a>
                     <a href="/subscriptions/_mr/1">&#9660;</a>
                 </th>
-
-
-                <!-- <th><a href="/subscriptions/sd/1">Start Date</a><th>                 -->
                 <th>
                     Start Date
                     <a href="/subscriptions/sd/1">&#9650;</a>
                     <a href="/subscriptions/_sd/1">&#9660;</a>
                 </th>
-            
-            
-            
-            
+                <th>
+                    Renew By
+                    <a href="/subscriptions/rb/1">&#9650;</a>
+                    <a href="/subscriptions/_rb/1">&#9660;</a>
+                </th>
             </thead>
             <tbody>
                 {% for subscription in my_subscriptions %}
                 <tr>
-                    <td><img src= {% static subscription.company.image_src %} alt={{subscription.company.image_alt}} style="width:100px;height:80px;" ></img></td>
+                    <!-- <td><img src={% static subscription.company.image_src %} alt={{subscription.company.image_alt}}
+                            style="width:100px;height:80px;"></img></td> -->
                     <td>
-                        <!-- <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;"> -->
+                        <img src="{% static 'img/'|add:subscription.company.image_src %}"
+                            alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
                         {{ subscription.company.company_name }}
                     </td>
                     <td>{{ subscription.account }}</td>
                     <td>{{ subscription.level }}</td>
                     <td>{{ subscription.monthly_rate }}</td>
                     <td>{{ subscription.start_date }}</td>
-                    <td><a href="/edit_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Edit</a></td>
+                    <td>{{ subscription.renew_by_date }}</td>
+                    <td><a href="/edit_subscription/{{ subscription.id }}" role="button"
+                            class="btn btn-sm btn-info ml-2 text-white">Edit</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    
-    <div class="container">
-        <h1>Your Subscription Renewal:</h1>
-        <table class="table table-dark">
-            <thead>
-                <th>Company:</th>
-                <th>Renew By:</th>
-                <th>Actions:</th>                
-            </thead>
-            <tbody>
-                {% for subscription in near_due_subscriptions %}
-                        <tr>
-                            <td>
-                                <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
-                                {{ subscription.company.company_name }}
-                            </td>
-                            <td>{{ subscription.renew_by_date }}</td>
-                            <td><a href="/renew_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Renew</a></td>
-                        </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
     <div class="container">
         <div id="page_nav">
             {% if my_subscriptions.has_previous %}
-                <button>
-                    <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.previous_page_number }}">&laquo;</a>
-                </button>
+            <button>
+                <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.previous_page_number }}">&laquo;</a>
+            </button>
             {% endif %}
             {% for i in num_of_pages %}
-                <button>
-                    <a href="/subscriptions/{{ order_by }}/{{ forloop.counter }}">{{ forloop.counter }}</a>
-                </button>
+            <button>
+                <a href="/subscriptions/{{ order_by }}/{{ forloop.counter }}">{{ forloop.counter }}</a>
+            </button>
             {% endfor %}
             {% if my_subscriptions.has_next %}
-                <button>
-                    <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.next_page_number }}">&raquo;</a>
-                </button>
+            <button>
+                <a href="/subscriptions/{{ order_by }}/{{ my_subscriptions.next_page_number }}">&raquo;</a>
+            </button>
             {% endif %}
-        </div>      <!--page_nav-->
+        </div>
+        <!--page_nav-->
     </div>
-
 </body>
+
 </html>
