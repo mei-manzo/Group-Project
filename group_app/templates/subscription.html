@@ -16,10 +16,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a href="/subscriptions/sd/1">
-                <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
+                <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo"
+                    style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
             </a>
-                style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
-            <a class="navbar-brand" href="#">Hello, {{user.first_name}}</a>
+            <p class="navbar-brand">Hello, {{user.first_name}}</p>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -39,6 +39,8 @@
             </div>
         </div>
     </nav>
+
+
     <div class="container">
 
         <div id="errors">
@@ -52,7 +54,7 @@
         </div>
         <!--end errors-->
 
-        <h1>Your Subscription Renewal:</h1>
+        <!-- <h1>Your Subscription Renewal:</h1>
         <table class="table table-dark">
             <thead>
                 <th>Company:</th>
@@ -65,14 +67,14 @@
                             <td>
                                 <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
                                 {{ subscription.company.company_name }}
-                            </td>
-                            <td>{{ subscription.renew_by_date }}</td>
+                            </td> -->
+                            <!-- <td>{{ subscription.renew_by_date }}</td>
                             <td><a href="/renew_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Renew</a></td>
                         </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
+    </div> -->
     
     <div class="container">
         <h1>Your Subscription List:</h1>
@@ -116,7 +118,8 @@
                             style="width:100px;height:80px;"></img></td> -->
                     <td>
                         <img src="{% static 'img/'|add:subscription.company.image_src %}"
-                            alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
+                            alt="{{ subscription.company.img_alt }}" 
+                            style="width:100px;height:80px;">
                         {{ subscription.company.company_name }}
                     </td>
                     <td>{{ subscription.account }}</td>
