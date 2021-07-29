@@ -44,6 +44,7 @@ Should be button to refresh
     -I've got two delete_subscription buttons in my editSubscription.html
 -can we move the pagination buttons to just below the subscriptions table
     -or maybe switch the order of the tables?
+-fixed img linking on subscriptions page
 
 
 
