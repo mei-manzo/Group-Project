@@ -8,6 +8,7 @@ import datetime
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
 PRICE_REGEX = re.compile(r'^[0-9]+\.[0-9]+$')
+NUM_REGEX = re.compile(r'^[0-9]+$')
 
 
 class UserManager(models.Manager):
@@ -77,8 +78,6 @@ class SubscriptionManager(models.Manager): #validates subscription data
             if postData['company_id'] == "-1":
                 if len(postData['company_name']) < 2:
                     errors["company"] = "A company name should be longer than 2 characters."
-                # if (postData['company_name']).capitalize() in Company.objects.filter(company_name=postData['company_name']).filter(entered_by_admin=True):
-                #     errors["company"] = "Company already exists. Please select from dropdown menu."
                 admin_company_exists = Company.objects.filter(company_name=postData['company_name'].capitalize()).filter(entered_by_admin=True)
                 if admin_company_exists:
                     errors["company"] = "Company Already Exists Please Select From Dropdown"                
@@ -208,6 +207,7 @@ class Subscription(models.Model): #company's / user's subscriptions
     created_at = models.DateTimeField(auto_now_add = True)
     objects = SubscriptionManager()#use to validate subscription data
 
+
 class DataPoint(models.Model):  #connect to subscription (can show one, or all)
     subscription = models.ForeignKey(
         Subscription,
@@ -220,5 +220,42 @@ class DataPoint(models.Model):  #connect to subscription (can show one, or all)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
+
+
+class MessageManager(models.Manager):
+    def msg_validator(self, postData):
+        errors = {}
+
+        if len(postData['msg_content']) < 8:
+                errors['message'] = "Please enter a valid message"
+        return errors
+
+
+class Message(models.Model):
+    msg_poster = models.ForeignKey(
+        User, 
+        related_name = "messages", 
+        on_delete = models.CASCADE
+    )
+    msg_content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = MessageManager()
+
+
+class Comment(models.Model):
+    cmt_poster = models.ForeignKey(
+        User, 
+        related_name = "comments", 
+        on_delete = models.CASCADE
+    )
+    cmt_message = models.ForeignKey(
+        Message, 
+        related_name = "comments", 
+        on_delete = models.CASCADE
+    )
+    cmt_content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
