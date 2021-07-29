@@ -12,20 +12,6 @@ import numpy as np
 import matplotlib.dates as mdates
 from matplotlib.dates import DateFormatter
 
-# default_companies = ['Amazon', "Pandora", "Hulu", "Planet Fitness", "Sam's Club", "YouTube", "Masterclass",
-# "Disney+",
-# "P.volve",
-# "Netflix",
-# "Annie's Creative Studio",
-# "Philo",
-# "Scribd",
-# "Apple News+",
-# "Blinkist",
-# "Wondium",
-# "Kindle Unlimited",
-# "Epic!",
-# "Amazon Music Unlimited",
-# "Goddess Provisions Moon Wisdom"]
 
 def index(request):
     return render(request, "index.html")
@@ -222,12 +208,10 @@ def add_subscription(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         all_companies = Company.objects.filter(entered_by_admin=True).order_by("company_name")
-        # todays_date = date.now(),
 
         context = {
             'logged_user': logged_user,
             'all_companies': all_companies,
-            # 'todays_date': todays_date,
         }
         return render(request, "add_subscription.html", context)
     return redirect("/")  
@@ -262,7 +246,6 @@ def process_add_subscription(request):
             
                 # gets or creates company to be subscribed to 
                 if request.POST['company_id'] == "-1":
-                    # if (request.POST['company_name']).capitalize() not in 
                     this_company = Company.objects.create(
                         company_name = (request.POST['company_name']).capitalize()
                     )
@@ -291,6 +274,7 @@ def process_add_subscription(request):
                 return redirect(f"/edit_subscription/{ new_subscription.id }")
         return redirect("/add_subscription")
     return redirect("/")  
+
 
 def edit_subscription(request, subscription_id):
     if 'user_id' in request.session:

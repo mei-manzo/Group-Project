@@ -18,7 +18,6 @@
 -Biannual adds two years (bi-yearly)
 Should be button to refresh
 -see if we can pull date into add_subscription
--apple news link
 
 
 
@@ -53,6 +52,7 @@ Should be button to refresh
 -added links to outside companies from subscriptions
 -corrected stats linking error from subscriptions
 -delete_subscription corrected
+-apple news url corrected
 
 7/28/2021
 -added hidden input to add_subscription and edit_subscription form
