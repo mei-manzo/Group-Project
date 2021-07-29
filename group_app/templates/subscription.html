@@ -9,7 +9,6 @@
     {% load static %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css"
         integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
-
 </head>
 
 <body>
@@ -19,7 +18,7 @@
                 <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo"
                     style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
             </a>
-            <p class="navbar-brand">Hello, {{user.first_name}}</p>
+            <p class="navbar-brand">Hello, {{ logged_user.first_name }}</p>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto"></ul>
                 <span class="navbar-text">

@@ -107,7 +107,7 @@ def subscriptions(request, order_by, page_num):
         num_of_pages = "a" * p.num_pages
         
         context = {
-            'user': logged_user,
+            'logged_user': logged_user,
             'my_subscriptions': page,
             'num_of_pages': num_of_pages,
             'order_by': order_by,

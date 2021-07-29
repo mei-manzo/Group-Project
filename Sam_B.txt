@@ -46,7 +46,7 @@ Should be button to refresh
     -limited to 20 years
 -update links for all the stats pages
 -added links to outside companies from subscriptions
-
+-corrected stats linking error from subscriptions
 
 7/28/2021
 -added hidden input to add_subscription and edit_subscription form
