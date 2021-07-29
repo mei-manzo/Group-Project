@@ -63,7 +63,6 @@ Should be button to refresh
 -fixed Sam's club img_src url
 
 
-
 7/25/2021
 -added date logic for renewal date for "Yearly" and "Bi-annually"
  subscriptions add_subscription
