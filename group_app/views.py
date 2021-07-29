@@ -150,7 +150,7 @@ def get_plot(companies):
         list_graph.append(graph)
     return list_graph
 
-def stats(request):
+def stats(request, subscription_id):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         all_subscriptions = Subscription.objects.filter(user = logged_user)
@@ -161,27 +161,31 @@ def stats(request):
             }
             return render(request, 'stats.html', context) 
         
-        companies={}
-        for subscription in all_subscriptions:
-            company_name = subscription.company.company_name
-            company_date_price = {}
+        this_subscription = Subscription.objects.get(id=subscription_id)
 
+        companies={}
+        company_date_price = {}
+
+        # for subscription in all_subscriptions:
+        #     company_name = subscription.company.company_name
+        #     company_date_price = {}
+
+        data_points = DataPoint.objects.filter(subscription= this_subscription).order_by("placed_at")
         
-            data_points = DataPoint.objects.filter(subscription= subscription).all()
-        
-            for data in data_points:
-                date = data.placed_at.date()
-                price = data.monthly_rate
-                print(date,price)
-                company_date_price[date] = price
-                
-            companies[company_name] = company_date_price
+        for data in data_points:
+            date = data.placed_at.date()
+            price = data.monthly_rate
+            print(date,price)
+            company_date_price[date] = price
+            
+        companies[this_subscription.company.company_name] = company_date_price
         
         list_graph = get_plot(companies)
         context = {
             'all_subscriptions_count': len(all_subscriptions),
             'user' : logged_user,
-            'list_graph':list_graph
+            'list_graph':list_graph,
+            'all_subscriptions': all_subscriptions,
         }
         return render(request, 'stats.html', context)    
     return redirect('/')
@@ -222,9 +226,12 @@ def add_subscription(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
         all_companies = Company.objects.filter(entered_by_admin=True).order_by("company_name")
+        # todays_date = date.now(),
+
         context = {
             'logged_user': logged_user,
             'all_companies': all_companies,
+            # 'todays_date': todays_date,
         }
         return render(request, "add_subscription.html", context)
     return redirect("/")  
@@ -409,5 +416,8 @@ def renew_subscription(request,subscription_id):
         return render(request, "renewSubscription.html")          
     return redirect("/")
 
-
-
+def select_sub_to_view(request):
+    if 'user_id' in request.session:
+        if request.method == "POST":
+            subscription_id = request.POST['subscription_id']
+    return redirect(f"/stats/{ subscription_id }")

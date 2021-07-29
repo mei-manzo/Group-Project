@@ -24,6 +24,12 @@
 --To_Do--
 -Biannual adds two years (bi-yearly)
 Should be button to refresh
+-update links for all the stats pages
+-see if we can pull date into add_subscription
+
+
+
+
 
 
 --Completed--
@@ -61,6 +67,7 @@ Should be button to refresh
 -deleted extra image files
 -added further order_by functionality to subscriptions table
 -fixed Sam's club img_src url
+-worked on stats display
 
 
 
