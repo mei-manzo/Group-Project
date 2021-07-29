@@ -166,10 +166,6 @@ def stats(request, subscription_id):
         companies={}
         company_date_price = {}
 
-        # for subscription in all_subscriptions:
-        #     company_name = subscription.company.company_name
-        #     company_date_price = {}
-
         data_points = DataPoint.objects.filter(subscription= this_subscription).order_by("placed_at")
         
         for data in data_points:
@@ -399,7 +395,6 @@ def delete_subscription(request):
             if subscription_to_delete.user == logged_user:     
                 subscription_to_delete.delete()
                 messages.error(request, "Subscription Successfully Deleted!")
-                return redirect("/subscriptions/sd/1")
         return redirect("/subscriptions/sd/1")
     return redirect("/")
 

@@ -95,12 +95,21 @@
                 {% for subscription in my_subscriptions %}
                 <tr>
                     <td>
-                        <a href="http://www.{{ subscription.company.url }}" target="display">
+                        {% if subscription.company.url %}
+                            <a href="http://www.{{ subscription.company.url }}" target="display">
+                                <img src="{% static 'img/'|add:subscription.company.image_src %}"
+                                    alt="{{ subscription.company.img_alt }}" 
+                                    style="width:100px;height:80px;">
+                                {{ subscription.company.company_name }}
+                            </a>
+                        {% else %}
                             <img src="{% static 'img/'|add:subscription.company.image_src %}"
-                                alt="{{ subscription.company.img_alt }}" 
-                                style="width:100px;height:80px;">
+                            alt="{{ subscription.company.img_alt }}" 
+                            style="width:100px;height:80px;">
                             {{ subscription.company.company_name }}
-                        </a>
+                        {% endif %}
+
+
                     </td>
                     <td>{{ subscription.account }}</td>
                     <td>{{ subscription.level }}</td>
