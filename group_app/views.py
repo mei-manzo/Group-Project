@@ -3,7 +3,7 @@ from django.contrib import messages
 import bcrypt
 from .models import *
 from datetime import datetime
-from datetime import date
+# from datetime import date
 from django.core.paginator import Paginator
 import matplotlib.pyplot as plt
 import base64
@@ -12,21 +12,6 @@ import numpy as np
 import matplotlib.dates as mdates
 from matplotlib.dates import DateFormatter
 
-
-
-# url_company ={
-#     'Netflix': 'https://www.netflix.com/',
-#     'Amazon':'https://www.amazon.com/gp/video/offers/ref=dvm_us_dl_sl_go_brsa_mkw_svHxbIxqC-dc_pcrid_448130500925?ie=UTF8&gclid=EAIaIQobChMI8ou9zLX88QIVNQytBh2E7wIjEAAYASAAEgK2cvD_BwE&mrntrk=slid__pgrid_29008589832_pgeo_9033288_x__ptid_kwd-45697133742',
-#     'Hulu' : 'https://www.hulu.com/welcome'
-# }
-
-# photo_company ={
-#     'Netflix': 'https://cdn.vox-cdn.com/thumbor/QuS2QKQys3HhosKiV-2IuKhphbo=/39x0:3111x2048/1400x1050/filters:focal(39x0:3111x2048):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/49901753/netflixlogo.0.0.png',
-#     'Amazon': 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Logo-700x394.png',
-#     'Hulu': 'https://assetshuluimcom-a.akamaihd.net/h3o/facebook_share_thumb_default_hulu.jpg'
-# }
-
-# default_companies = ['Amazon', 'Pandora', 'Hulu', 'Planet Fitness',"Sam's Club", 'YouTube', 'Masterclass','Disney+','P.volve', 'Netflix', "Annie's Creative Studio",'Philo', 'Scribd', 'Apple News+', 'Blinkist', 'Wondium', 'Kindle Unlimited', 'Epic!', 'Amazon Music Unlimited', 'Goddess Provisions Moon Wisdom']
 
 def index(request):
     return render(request, "index.html")
@@ -113,6 +98,7 @@ def subscriptions(request, order_by, page_num):
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
+
     
 def get_graph():
     buffer = BytesIO()
@@ -259,7 +245,7 @@ def process_add_subscription(request):
                 # gets or creates company to be subscribed to 
                 if request.POST['company_id'] == "-1":
                     this_company = Company.objects.create(
-                        company_name = request.POST['company_name']
+                        company_name = (request.POST['company_name']).capitalize()
                     )
                 else:
                     this_company = Company.objects.get(id= request.POST['company_id'])
@@ -344,7 +330,7 @@ def process_edit_subscription(request, subscription_id):
                     subscription_to_edit.level = request.POST['level']
 
                     if subscription_to_edit.monthly_rate != Decimal(request.POST['monthly_rate']):
-                        price_change = subscription_to_edit.monthly_rate - Decimal(request.POST['monthly_rate'])
+                        price_change = Decimal(request.POST['monthly_rate']) - subscription_to_edit.monthly_rate
                         DataPoint.objects.create(
                             subscription = subscription_to_edit,
                             monthly_rate = Decimal(request.POST['monthly_rate']),

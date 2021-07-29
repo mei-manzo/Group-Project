@@ -2,15 +2,12 @@ from django.db import models
 import re
 import bcrypt
 from decimal import Decimal
+from datetime import datetime
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
-MONEY_REGEX = re.compile('|'.join([
-    r'^\$?(\d*(\.\d\d?)?|\d+)$',
-    ]))
-# PRICE_REGEX = re.compile(r'^[0-9]+\.[0-9]+$')
-
+PRICE_REGEX = re.compile(r'^[0-9]+\.[0-9]+$')
 
 
 class UserManager(models.Manager):
@@ -71,9 +68,9 @@ class SubscriptionManager(models.Manager): #validates subscription data
         logged_user = User.objects.get(id=postData['user_id'])
         user_subscriptions = Subscription.objects.filter(user=logged_user)
         if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
-            errors["company"] = "Please do not select a company from the dropdown and enter a your own."
+            errors["company"] = "Please do not select a company from the dropdown and enter your own."
         elif postData['company_id'] == "-1" and len(postData['company_name']) < 1:
-            errors["company"] = "Please either select a company from the dropdown or enter a your own."
+            errors["company"] = "Please either select a company from the dropdown or enter your own."
         else:
             if postData['company_id'] == "-1":
                 if len(postData['company_name']) < 2:
@@ -94,7 +91,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["level"] = "Subscription level should be at least 2 characters."
         if len(postData['monthly_rate']) < 1:
             errors["monthly_rate"] = "Must enter a monthly rate"
-        if not MONEY_REGEX.match(postData['monthly_rate']):             
+        if not PRICE_REGEX.match(postData['monthly_rate']):             
             errors['monthly_rate'] = "Invalid monetary value!"
         if len(postData['start_date']) < 1:
             errors["start_date"] = "Please select a valid start date." 
@@ -107,7 +104,6 @@ class SubscriptionManager(models.Manager): #validates subscription data
         
         if len(postData['account']) <2:
             errors["account"] = "Subscription account should be at least 2 characters."
-
 
         logged_user = User.objects.get(id=postData['user_id'])
         if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
@@ -134,7 +130,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["level"] = "Subscription level should be at least 2 characters."
         if len(postData['monthly_rate']) < 1:
             errors["monthly_rate"] = "Must enter a monthly rate"
-        if not MONEY_REGEX.match(postData['monthly_rate']):             
+        if not PRICE_REGEX.match(postData['monthly_rate']):             
             errors['monthly_rate'] = "Invalid monetary value!"
         if len(postData['start_date']) < 1:
             errors["start_date"] = "Please select a valid start date." 
@@ -178,10 +174,9 @@ class Subscription(models.Model): #company's / user's subscriptions
     )
     account = models.CharField(max_length = 255) #for different accounts from same company
     level = models.CharField(max_length = 255) # for premium, basic, first tier etc
-    monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
+    monthly_rate = models.DecimalField(decimal_places=2, max_digits=9)
     start_date = models.DateField()#can be selected from a clickable calender to deal with formatting
     renew_by_date = models.DateField(null=True, blank=True)
-    # due_date = models.CharField(max_length = 10)#made charfield so that can designate just one day of month - the "9th" of every month etc.
     duration = models.CharField(max_length = 255) #can select from dropdown? auto-renew, 12-month, etc
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)

@@ -1,25 +1,11 @@
 --Notes--
--monthly_rate regex not comfirmed talk to Mei
 
--confirm hidden input for add/edit_subscription integrated properly
+-what are we linking "Hello, {{ logged_user.first_name }}" to in our pages?
 
--I tested my img call just to make sure I wasn't sending Jason down
- the wrong road with this. It works so I left it in place, just 
- commented out
-    -can we move the company image into the same cell as the company name
-
--can we move the pagination buttons to just below the subscriptions table
-    -or maybe switch the order of the tables?
-
--add delete button to renewal chart actions column
-
--What changes are we going to allow at renewal?
-    -do we wish to make it's own confirmation page?
+-do we want to still link the logo on the login/reg page?
 
 
--I've got two delete_subscription buttons in my editSubscription.html
 
--confirm password on registration is still not obscured
 
 -Please note that the mainstream companies we intend to have images 
  and stored information for must be managed via the admin panel
@@ -36,11 +22,12 @@
 
 
 --To_Do--
--if we decide to include the renew function we may need to expand it 
- such that we can allow for price changes at the time of renewal to 
- better accomodate the building of an accurate new datapoint and to update the 
- renew_by_date
-
+Sam-Validations for year 0888 anything less 07/12/0998
+-Biannual adds two years (bi-yearly)
+Sam- Add redirect to home page from clicking on logo
+Sam- Changing number of shown subscriptions to 10 per page
+Sam-Bring renew date into base table to consolidate
+Should be button to refresh
 
 
 
@@ -49,6 +36,19 @@
 
 
 --Completed--
+7/29/2021
+-Update monthly_rate to PRICE_REGEX
+-Validation doesn’t accept anything greater than three digits (make a note on the monthly_rate field in models 7 digits)
+-housekeeping
+-deleted extra delete_subscription form/button  
+    -I've got two delete_subscription buttons in my editSubscription.html
+-can we move the pagination buttons to just below the subscriptions table
+    -or maybe switch the order of the tables?
+-fixed img linking on subscriptions page
+
+
+
+
 7/28/2021
 -added hidden input to add_subscription and edit_subscription form
 -errors handling for process_add_subscription
