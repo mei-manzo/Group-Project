@@ -2,7 +2,7 @@ from django.db import models
 import re
 import bcrypt
 from decimal import Decimal
-from datetime import datetime
+import datetime
 
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -93,8 +93,22 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["monthly_rate"] = "Must enter a monthly rate"
         if not PRICE_REGEX.match(postData['monthly_rate']):             
             errors['monthly_rate'] = "Invalid monetary value!"
+
         if len(postData['start_date']) < 1:
             errors["start_date"] = "Please select a valid start date." 
+        if postData['start_date'] >= str(datetime.date.today()):
+            errors['start_date'] = "Please enter a date prior to today's date"
+        nums = postData['start_date'].split("-")
+        within_twenty = int(nums[0])+20
+        nums[0] = str(within_twenty)
+        new_date = "-".join(nums)
+        date_plus_twenty = datetime.datetime.strptime(new_date, '%Y-%m-%d')
+        if date_plus_twenty < datetime.datetime.now():
+            errors["start_date"] = "The start date must be within the last 20 years."
+
+
+
+
         if postData['duration'] == "-1":
             errors["duration"] = "Please select a duration."
         return errors
@@ -134,6 +148,15 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors['monthly_rate'] = "Invalid monetary value!"
         if len(postData['start_date']) < 1:
             errors["start_date"] = "Please select a valid start date." 
+        if postData['start_date'] >= str(datetime.date.today()):
+            errors['start_date'] = "Please enter a date prior to today's date"
+        nums = postData['start_date'].split("-")
+        within_twenty = int(nums[0])+20
+        nums[0] = str(within_twenty)
+        new_date = "-".join(nums)
+        date_plus_twenty = datetime.datetime.strptime(new_date, '%Y-%m-%d')
+        if date_plus_twenty < datetime.datetime.now():
+            errors["start_date"] = "The start date must be within the last 20 years."
         if postData['duration'] == "-1":
             errors["duration"] = "Please select a duration."
         return errors

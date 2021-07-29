@@ -74,6 +74,10 @@ def subscriptions(request, order_by, page_num):
             order_by_field = "monthly_rate"
         elif order_by == "_mr":
             order_by_field = "-monthly_rate"
+        elif order_by == "rb":
+            order_by_field = "renew_by_date"
+        elif order_by == "_rb":
+            order_by_field = "-renew_by_date"
         elif order_by == "_sd":
             order_by_field = "-start_date"
         else:
@@ -82,7 +86,7 @@ def subscriptions(request, order_by, page_num):
         my_subscriptions = Subscription.objects.filter(user = logged_user).order_by(order_by_field)
         
         # pagination driver
-        p = Paginator(my_subscriptions, 5)
+        p = Paginator(my_subscriptions, 10)
         page = p.page(page_num)
         num_of_pages = "a" * p.num_pages
         
@@ -97,7 +101,7 @@ def subscriptions(request, order_by, page_num):
         return render(request, 'subscription.html', context)    
     return redirect('/')
 
-    
+
 def get_graph():
     buffer = BytesIO()
     plt.savefig(buffer, format='png')

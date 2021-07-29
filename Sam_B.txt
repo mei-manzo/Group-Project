@@ -1,8 +1,8 @@
 --Notes--
 
--what are we linking "Hello, {{ logged_user.first_name }}" to in our pages?
+-Style "Hello, {{ logged_user.first_name }}" to in our pages
+-maybe separate the company names from the company logos by a few px
 
--do we want to still link the logo on the login/reg page?
 
 
 
@@ -22,17 +22,8 @@
 
 
 --To_Do--
-Sam-Validations for year 0888 anything less 07/12/0998
 -Biannual adds two years (bi-yearly)
-Sam- Add redirect to home page from clicking on logo
-Sam- Changing number of shown subscriptions to 10 per page
-Sam-Bring renew date into base table to consolidate
 Should be button to refresh
-
-
-
-
-
 
 
 --Completed--
@@ -45,7 +36,14 @@ Should be button to refresh
 -can we move the pagination buttons to just below the subscriptions table
     -or maybe switch the order of the tables?
 -fixed img linking on subscriptions page
-
+-Changing number of shown subscriptions to 10 per page
+-Bring renew date into base table to consolidate
+- Add redirect to home page from clicking on logo
+    -still link the logo on the login/reg page
+-removed link from "Hello, {{ logged_user.first_name }}" to in our pages
+    -what are we linking "Hello, {{ logged_user.first_name }}" to in our pages?
+-Validations for year 0888 anything less 07/12/0998
+    -limited to 20 years
 
 
 
