@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 import bcrypt
 from .models import *
-from datetime import datetime
+from datetime import datetime, date
 # from datetime import date
 from django.core.paginator import Paginator
 import matplotlib.pyplot as plt
@@ -112,7 +112,6 @@ def subscriptions(request, order_by, page_num):
             'num_of_pages': num_of_pages,
             'order_by': order_by,
             'near_due_subscriptions': Subscription.objects.filter(user=logged_user).order_by("renew_by_date")[:6],
-            # 'photo_company': photo_company            
         }
         return render(request, 'subscription.html', context)    
     return redirect('/')
@@ -169,13 +168,13 @@ def stats(request):
 
         
             data_points = DataPoint.objects.filter(subscription= subscription).all()
-          
+        
             for data in data_points:
                 date = data.created_at.date()
                 price = data.monthly_rate
                 print(date,price)
                 company_date_price[date] = price
-           
+                
             companies[company_name] = company_date_price
         
         list_graph = get_plot(companies)
@@ -253,12 +252,10 @@ def process_add_subscription(request):
                     time_change = 1
 
                 s_date = st_date.split("-")
-
-                if sub_duration == "Bi-annually" or sub_duration == "Yearly":
-                    add_time = int(s_date[0])+time_change
-                    s_date[0] = str(add_time)
-                    renew_date = "-".join(s_date)
-                    date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')        
+                add_time = int(s_date[0])+time_change
+                s_date[0] = str(add_time)
+                renew_date = "-".join(s_date)
+                date_plus_time = datetime.strptime(renew_date, '%Y-%m-%d')        
             
                 # gets or creates company to be subscribed to 
                 if request.POST['company_id'] == "-1":
@@ -285,6 +282,7 @@ def process_add_subscription(request):
                 DataPoint.objects.create(
                     subscription = new_subscription,
                     monthly_rate = Decimal(request.POST['monthly_rate']),
+                    placed_at = datetime.now(),
                 )
                 messages.error(request, "Subscription Successfully Added!")
                 return redirect(f"/edit_subscription/{ new_subscription.id }")
@@ -354,6 +352,7 @@ def process_edit_subscription(request, subscription_id):
                             subscription = subscription_to_edit,
                             monthly_rate = Decimal(request.POST['monthly_rate']),
                             price_change = price_change,
+                            placed_at = datetime.now(),
                         )
                         subscription_to_edit.monthly_rate = Decimal(request.POST['monthly_rate'])
 
@@ -410,7 +409,5 @@ def renew_subscription(request,subscription_id):
         return render(request, "renewSubscription.html")          
     return redirect("/")
 
-def process_renew_subscription():
-    pass
 
 
