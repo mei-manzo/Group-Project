@@ -170,7 +170,7 @@ def stats(request):
             data_points = DataPoint.objects.filter(subscription= subscription).all()
         
             for data in data_points:
-                date = data.created_at.date()
+                date = data.placed_at.date()
                 price = data.monthly_rate
                 print(date,price)
                 company_date_price[date] = price
