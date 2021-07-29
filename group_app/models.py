@@ -207,6 +207,7 @@ class Subscription(models.Model): #company's / user's subscriptions
     created_at = models.DateTimeField(auto_now_add = True)
     objects = SubscriptionManager()#use to validate subscription data
 
+
 class DataPoint(models.Model):  #connect to subscription (can show one, or all)
     subscription = models.ForeignKey(
         Subscription,

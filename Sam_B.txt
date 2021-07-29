@@ -1,16 +1,9 @@
 --Notes--
-
 -Style "Hello, {{ logged_user.first_name }}" to in our pages
 -maybe separate the company names from the company logos by a few px
-
-
-
-
-
--Please note that the mainstream companies we intend to have images 
- and stored information for must be managed via the admin panel
-    -to show up in the companies drop-down they must be checked True for 
-     entered_by_admin
+-style select subscription form on stats page
+-if anyone can just help make sure all the outside company links are working
+ I'd appreciate it
 
 
 
@@ -24,8 +17,9 @@
 --To_Do--
 -Biannual adds two years (bi-yearly)
 Should be button to refresh
--update links for all the stats pages
 -see if we can pull date into add_subscription
+
+
 
 
 
@@ -50,8 +44,9 @@ Should be button to refresh
     -what are we linking "Hello, {{ logged_user.first_name }}" to in our pages?
 -Validations for year 0888 anything less 07/12/0998
     -limited to 20 years
-
-
+-update links for all the stats pages
+-added links to outside companies from subscriptions
+-corrected stats linking error from subscriptions
 
 7/28/2021
 -added hidden input to add_subscription and edit_subscription form
