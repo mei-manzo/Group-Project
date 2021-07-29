@@ -54,6 +54,7 @@ Should be button to refresh
 -delete_subscription corrected
 -apple news url corrected
 
+
 7/28/2021
 -added hidden input to add_subscription and edit_subscription form
 -errors handling for process_add_subscription
