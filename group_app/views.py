@@ -9,7 +9,23 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 import numpy as np
+import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter
 
+# default_companies = ['Amazon', "Pandora", "Hulu", "Planet Fitness", "Sam's Club", "YouTube", "Masterclass",
+# "Disney+",
+# "P.volve",
+# "Netflix",
+# "Annie's Creative Studio",
+# "Philo",
+# "Scribd",
+# "Apple News+",
+# "Blinkist",
+# "Wondium",
+# "Kindle Unlimited",
+# "Epic!",
+# "Amazon Music Unlimited",
+# "Goddess Provisions Moon Wisdom"]
 
 def index(request):
     return render(request, "index.html")
@@ -117,16 +133,23 @@ def get_plot(companies):
     for company_name in companies:
         company_date_price = companies[company_name]
         x = company_date_price.keys()
+        
         y = company_date_price.values()
+        
         plt.switch_backend('AGG')
         plt.figure(figsize=(10,5))
         plt.title(company_name)
+        ax = plt.gca()
+        formatter = mdates.DateFormatter("%Y-%m-%d")
+        ax.xaxis.set_major_formatter(formatter)
+        locator = mdates.DayLocator()
+        ax.xaxis.set_major_locator(locator)
         plt.plot(x,y,marker ='o',mfc='red',linestyle ='--')
         plt.xlabel('Dates')
         plt.ylabel('Prices')
         graph=get_graph()
         list_graph.append(graph)
-    return(list_graph)
+    return list_graph
 
 def stats(request):
     if 'user_id' in request.session:
@@ -146,12 +169,13 @@ def stats(request):
 
         
             data_points = DataPoint.objects.filter(subscription= subscription).all()
-
+          
             for data in data_points:
                 date = data.created_at.date()
-                price = float(data.monthly_rate)
+                price = data.monthly_rate
+                print(date,price)
                 company_date_price[date] = price
-                # print(date, price)
+           
             companies[company_name] = company_date_price
         
         list_graph = get_plot(companies)
@@ -238,6 +262,7 @@ def process_add_subscription(request):
             
                 # gets or creates company to be subscribed to 
                 if request.POST['company_id'] == "-1":
+                    # if (request.POST['company_name']).capitalize() not in 
                     this_company = Company.objects.create(
                         company_name = (request.POST['company_name']).capitalize()
                     )
@@ -373,7 +398,7 @@ def delete_subscription(request, subscription_id):
     return redirect("/")
 
 
-def renew_subscription(request, subscription_id):
+def renew_subscription(request,subscription_id):
     if 'user_id' in request.session:
         if request.method == "POST":
             logged_user = User.objects.get(id=request.session['user_id'])
@@ -381,7 +406,11 @@ def renew_subscription(request, subscription_id):
             if subscription_to_renew.user == logged_user:    
                 subscription_to_renew.start_date = datetime.now()
                 subscription_to_renew.save()
-        return redirect(f"/edit_subscription/{ subscription_id }")            
+            
+        return render(request, "renewSubscription.html")          
     return redirect("/")
+
+def process_renew_subscription():
+    pass
 
 
