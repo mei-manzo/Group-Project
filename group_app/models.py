@@ -71,9 +71,9 @@ class SubscriptionManager(models.Manager): #validates subscription data
         logged_user = User.objects.get(id=postData['user_id'])
         user_subscriptions = Subscription.objects.filter(user=logged_user)
         if postData['company_id'] != "-1" and len(postData['company_name']) > 0:
-            errors["company"] = "Please do not select a company from the dropdown and enter a your own."
+            errors["company"] = "Please do not select a company from the dropdown and enter your own."
         elif postData['company_id'] == "-1" and len(postData['company_name']) < 1:
-            errors["company"] = "Please either select a company from the dropdown or enter a your own."
+            errors["company"] = "Please either select a company from the dropdown or enter your own."
         else:
             if postData['company_id'] == "-1":
                 if len(postData['company_name']) < 2:

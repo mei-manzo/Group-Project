@@ -161,6 +161,7 @@ def stats(request):
                 date = data.created_at.date()
                 price = float(data.monthly_rate)
                 company_date_price[date] = price
+                # print(date, price)
             companies[company_name] = company_date_price
         
         list_graph = get_plot(companies)
