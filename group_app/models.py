@@ -13,6 +13,7 @@ PRICE_REGEX = re.compile(r'^[0-9]+\.[0-9]+$')
 class UserManager(models.Manager):
     def basic_validator(self, postData):
         errors = {}
+
         email = postData['email']
         if len(postData['first-name']) <2:
             errors["first_name"]="First name should be at least 2 characters"
@@ -30,6 +31,7 @@ class UserManager(models.Manager):
         
     def login_validator(self, postData):
         errors = {}
+
         existing_user = User.objects.filter(email=postData['email'])
         if len(postData['email']) == 0:
             errors['email'] = "Must enter an email"
@@ -106,9 +108,6 @@ class SubscriptionManager(models.Manager): #validates subscription data
         if date_plus_twenty < datetime.datetime.now():
             errors["start_date"] = "The start date must be within the last 20 years."
 
-
-
-
         if postData['duration'] == "-1":
             errors["duration"] = "Please select a duration."
         return errors
@@ -146,6 +145,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
             errors["monthly_rate"] = "Must enter a monthly rate"
         if not PRICE_REGEX.match(postData['monthly_rate']):             
             errors['monthly_rate'] = "Invalid monetary value!"
+
         if len(postData['start_date']) < 1:
             errors["start_date"] = "Please select a valid start date." 
         if postData['start_date'] >= str(datetime.date.today()):
@@ -157,6 +157,7 @@ class SubscriptionManager(models.Manager): #validates subscription data
         date_plus_twenty = datetime.datetime.strptime(new_date, '%Y-%m-%d')
         if date_plus_twenty < datetime.datetime.now():
             errors["start_date"] = "The start date must be within the last 20 years."
+
         if postData['duration'] == "-1":
             errors["duration"] = "Please select a duration."
         return errors
@@ -211,8 +212,8 @@ class DataPoint(models.Model):  #connect to subscription (can show one, or all)
         related_name = "subscription_datapoints",
         on_delete=models.CASCADE,
     )
-    monthly_rate = models.DecimalField(decimal_places=2, max_digits=5)
-    price_change = models.DecimalField(default = 0.00, decimal_places=2, max_digits=5)
+    monthly_rate = models.DecimalField(decimal_places=2, max_digits=9)
+    price_change = models.DecimalField(default = 0.00, decimal_places=2, max_digits=9)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
