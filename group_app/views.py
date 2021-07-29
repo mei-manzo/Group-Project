@@ -193,7 +193,7 @@ def process_edit_user(request):
 def add_subscription(request):
     if 'user_id' in request.session:
         logged_user = User.objects.get(id=request.session['user_id'])
-        all_companies = Company.objects.filter(entered_by_admin=True)
+        all_companies = Company.objects.filter(entered_by_admin=True).order_by("company_name")
         context = {
             'logged_user': logged_user,
             'all_companies': all_companies,
@@ -266,7 +266,7 @@ def edit_subscription(request, subscription_id):
         logged_user = User.objects.get(id=request.session['user_id'])
         subscription_to_edit = Subscription.objects.get(id=subscription_id)
         if subscription_to_edit.user == logged_user:  
-            all_companies = Company.objects.filter(entered_by_admin=True)   
+            all_companies = Company.objects.filter(entered_by_admin=True).order_by("company_name")   
             context = {
                 'logged_user': logged_user,
                 'subscription_to_edit': subscription_to_edit,
@@ -355,16 +355,16 @@ def process_edit_subscription(request, subscription_id):
     return redirect("/")
 
 
-def delete_subscription(request):
+def delete_subscription(request, subscription_id):
     if 'user_id' in request.session:
-        if request.method == "POST":
+        # if request.method == "POST":
             logged_user = User.objects.get(id=request.session['user_id'])
-            subscription_to_delete = Subscription.objects.get(id=request.POST['subscription_id'])
+            subscription_to_delete = Subscription.objects.get(id=subscription_id)
             if subscription_to_delete.user == logged_user:     
                 subscription_to_delete.delete()
                 messages.error(request, "Subscription Successfully Deleted!")
                 return redirect("/subscriptions/sd/1")
-        return redirect("/subscriptions/sd/1")
+        # return redirect("/subscriptions/sd/1")
     return redirect("/")
 
 

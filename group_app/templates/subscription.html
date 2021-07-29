@@ -52,6 +52,29 @@
         </div>
         <!--end errors-->
 
+        <h1>Your Subscription Renewal:</h1>
+        <table class="table table-dark">
+            <thead>
+                <th>Company:</th>
+                <th>Renew By:</th>
+                <th>Actions:</th>                
+            </thead>
+            <tbody>
+                {% for subscription in near_due_subscriptions %}
+                        <tr>
+                            <td>
+                                <img src="{% static 'img/'|add:subscription.company.image_src %}" alt="{{ subscription.company.img_alt }}" style="width:100px;height:80px;">
+                                {{ subscription.company.company_name }}
+                            </td>
+                            <td>{{ subscription.renew_by_date }}</td>
+                            <td><a href="/renew_subscription/{{ subscription.id }}" role="button" class="btn btn-sm btn-info ml-2 text-white">Renew</a></td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="container">
         <h1>Your Subscription List:</h1>
         <table class="table table-dark">
             <thead>
