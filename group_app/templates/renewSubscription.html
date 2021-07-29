@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Renewal Subscription</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static '' %}"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/darkly/bootstrap.min.css" integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <img id="logo" src="{% static 'logo_dark_grey_bg.jpg' %}" alt="subscription tracker logo" style="width:270px;height:50px; padding-bottom: 10px; margin-right: 100px;">
+            <a class="navbar-brand" href="#">Hello, {{ user.first_name }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto"></ul>
+                <span class="navbar-text">
+                        <a href="/subscriptions/sd/1" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Subscriptions</a>
+                        <a href="/subscriptions/stats" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Stats</a>
+                        <a href="/user_account" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Edit Profile</a>
+                        </a> <a href="/logout" role="button"
+                        class="btn btn-sm btn-info ml-2 text-white">Logout</a>
+                </span>                
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div id="errors">
+            {% if messages %}
+            <ul>    
+                {% for message in messages %}    
+                    <li>{{ message }}</li>    
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>      <!--end errors-->
+
+        <h1>Renew Subscription:</h1>   
+
+        <form action="/process_renew_subscription" method="POST">
+            {% csrf_token %}
+
+         
+            <div class="form-group">
+                <label for='company_name'>Company:</label>
+                <input type="text" name="company_name" id='company_name' value="{{ subscription_to_edit.company.company_name }}" class='form-control'>
+            </div>
+            
+
+            <div class="form-group">
+                <label for='account'>Account:</label>
+                <input type="text" name="account" id='account' class='form-control' value="{{ subscription_to_edit.account }}">
+            </div>
+
+            <div class="form-group">
+                <label for='level'>Level:</label>
+                <input type="text" name="level" id='level' class='form-control' value="{{ subscription_to_edit.level }}">
+            </div>
+            <div class="form-group">
+                <label for='monthly_rate'>Monthly Rate:</label>
+                <input type="text" name="monthly_rate" id='monthly_rate' class='form-control' value="{{ subscription_to_edit.monthly_rate }}">
+            </div>
+            <div class="form-group">
+                <label for='start_date'>Start Date:</label>
+                <input type="date" name="start_date" id='start_date' class='form-control' value="{{ subscription_to_edit.start_date|date:"Y-m-d"  }}">
+            </div>
+            <div class="form-group">
+                <label for='duration'>Duration:</label>
+                <select name="duration" id='duration' class='form-control'>
+                    <option value="{{ subscription_to_edit.duration }}">{{ subscription_to_edit.duration }}</option>
+                    <option value="Bi-annually">Bi-annually</option>
+                    <option value="Yearly">Yearly</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <a href="/process_renew_subscription" role="button" class="btn btn-sm btn-info ml-2 text-white">Renew</a>
+                
+                
+            </div>
+
+        </form>
+
+
+
+
+
+
+       
+    
+
+
+
+
+
+
+    </div>
+
+</body>
+
+</html>
