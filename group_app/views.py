@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 import numpy as np
-from random import randint
+import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter
 
 
 
@@ -134,6 +135,11 @@ def get_plot(companies):
         plt.switch_backend('AGG')
         plt.figure(figsize=(10,5))
         plt.title(company_name)
+        ax = plt.gca()
+        formatter = mdates.DateFormatter("%Y-%m-%d")
+        ax.xaxis.set_major_formatter(formatter)
+        locator = mdates.DayLocator()
+        ax.xaxis.set_major_locator(locator)
         plt.plot(x,y,marker ='o',mfc='red',linestyle ='--')
         plt.xlabel('Dates')
         plt.ylabel('Prices')
@@ -163,7 +169,7 @@ def stats(request):
             for data in data_points:
                 date = data.created_at.date()
                 price = data.monthly_rate
-                
+                print(date,price)
                 company_date_price[date] = price
            
             companies[company_name] = company_date_price
