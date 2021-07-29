@@ -1,7 +1,7 @@
 from django.urls import path     
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
+# from django.conf import settings
+# from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index),
@@ -10,9 +10,6 @@ urlpatterns = [
     path('logout', views.logout),
     path('subscriptions/<str:order_by>/<int:page_num>', views.subscriptions),
     path('subscriptions/stats', views.stats),
-
-
-
     path('user_account', views.user_account),
     path('process_edit_user', views.process_edit_user),
     path('add_subscription', views.add_subscription),
@@ -21,5 +18,4 @@ urlpatterns = [
     path('process_edit_subscription/<int:subscription_id>', views.process_edit_subscription),
     path('delete_subscription/<int:subscription_id>', views.delete_subscription),
     path('renew_subscription/<int:subscription_id>', views.renew_subscription), 
-    path('process_renew_subscription', views.process_renew_subscription)
 ]
