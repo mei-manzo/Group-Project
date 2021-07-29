@@ -18,7 +18,7 @@
 -Biannual adds two years (bi-yearly)
 Should be button to refresh
 -see if we can pull date into add_subscription
-
+-apple news link
 
 
 
